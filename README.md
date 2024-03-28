@@ -13,10 +13,12 @@ With PI assembly, you are essentially programming in micro-code.
 
 More information is availible in the ISA document. Currently only availible only in the 4-bit version.
 
+There is also a logical simulation of a 4-bit PI CPU availible (the .cv) file. This is a simulation made by Circuit Verse software.
+
+
+
 Further plans
 ____________________
-
-I am not in the process of creating a logical simulation of an implementation of this architecture, using Circuit Verse logic simulator. Then probably an FPGA simulation will follow.
 
 Eventually I plan on actually building the CPU based on the 8-bit version of this architecture (since 4-bit is not really practical for anything, except the most basic programs).
 
