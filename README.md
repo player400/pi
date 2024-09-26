@@ -17,6 +17,13 @@ There is also a logical simulation of a 4-bit PI CPU availible (the .cv) file. T
 
 
 
+Virtual Machine
+____________________
+
+Folder pi_vm contains a simple virtual machine for PI architecture, that is currently being developed.
+
+
+
 Further plans
 ____________________
 
