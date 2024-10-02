@@ -8,4 +8,5 @@ add_executable(pi_vm main.cpp
         computer/Processor.h
         utils.h
         computer/Computer.h
-        computer/architecture/ComputerArchitecture.h)
+        computer/architecture/ComputerArchitecture.h
+        ControllerInterface.h)

@@ -23,6 +23,36 @@ public:
         cpu.cycle();
     }
 
+    void resume()
+    {
+        cpu.resume();
+    }
+
+    void programmingMode()
+    {
+        cpu.programmingMode();
+    }
+
+    void runningMode()
+    {
+        cpu.runningMode();
+    }
+
+    int output()
+    {
+        return (int)cpu.getAccumulator();
+    }
+
+    void input(int registryContent)
+    {
+        cpu.setRegister(Processor<uint32_t>::ACCUMULATOR, registryContent);
+    }
+
+    bool isStopped()
+    {
+        return cpu.isStopped();
+    };
+
     void program(uint32_t address, uint32_t value)
     {
         if(address<4)

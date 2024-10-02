@@ -30,6 +30,7 @@ private:
     Memory& memory;
     T instructionRegistry[2];
     int wordWidth;
+    bool inProgrammingMode = false;
 
     bool lastOperationCarry;
 
@@ -159,17 +160,15 @@ public:
 
     void cycle()
     {
-        if(flags[HALT_FLAG])
-        {
-            std::cout<<(int)getAccumulator()<<std::endl;
-            std::cin.get();
-            flags[HALT_FLAG]=false;
+        if(!inProgrammingMode) {
+            if (flags[HALT_FLAG]) {
+                return;
+            }
+            instructionRegistry[0] = memory.load(registers[PROGRAM_COUNTER] - registryCount);
+            instructionRegistry[1] = memory.load((registers[PROGRAM_COUNTER] + 1) - registryCount);
+            registers[PROGRAM_COUNTER] += 2;
+            decodeAndExecute();
         }
-        instructionRegistry[0] = memory.load(registers[PROGRAM_COUNTER]-registryCount);
-        instructionRegistry[1] = memory.load((registers[PROGRAM_COUNTER]+1)-registryCount);
-        registers[PROGRAM_COUNTER]+=2;
-        decodeAndExecute();
-
     }
 
     void setRegister(T registryNumber, T value)
@@ -190,9 +189,24 @@ public:
         triggerAccumulator();
     }
 
+    bool isStopped()
+    {
+        return flags[HALT_FLAG];
+    }
+
     void resume()
     {
         flags[HALT_FLAG] = false;
+    }
+
+    void programmingMode()
+    {
+        inProgrammingMode = true;
+    }
+
+    void runningMode()
+    {
+        inProgrammingMode = false;
     }
 
     Processor(int registryAddressSpaceByteCount, Memory& memory, int wordWidth):memory(memory)

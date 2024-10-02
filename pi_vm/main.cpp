@@ -2,6 +2,9 @@
 #include "computer/Memory.h"
 #include "computer/Processor.h"
 #include "computer/Computer.h"
+#include "ControllerInterface.h"
+#include <thread>
+
 
 int main() {
 
@@ -9,6 +12,7 @@ int main() {
     Computer unit;
 
 
+    unit.programmingMode();
     unit.program(0, 4);
     unit.program(1, 0);
     unit.program(2, 1);
@@ -24,8 +28,11 @@ int main() {
     unit.program(12, 0b0000);
     unit.program(13, 0b1110);
     unit.program(14, 4);
+    unit.runningMode();
 
+    ControllerInterface interface(unit);
 
+    std::thread t1([&interface](){interface.run();});
 
     while(true)
     {
