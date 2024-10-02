@@ -6,4 +6,6 @@ set(CMAKE_CXX_STANDARD 23)
 add_executable(pi_vm main.cpp
         computer/Memory.h
         computer/Processor.h
-        utils.h)
+        utils.h
+        computer/Computer.h
+        computer/architecture/ComputerArchitecture.h)

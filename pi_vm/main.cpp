@@ -1,41 +1,35 @@
 #include <iostream>
 #include "computer/Memory.h"
 #include "computer/Processor.h"
+#include "computer/Computer.h"
 
 int main() {
 
-    Memory<uint8_t> mem(12);
-    Processor<uint8_t> cpu(2, mem, 4);
 
-    cpu.setRegister(Processor<uint8_t>::ALPHA, 0);
-    cpu.setRegister(Processor<uint8_t>::BETA, 1);
+    Computer unit;
 
-    mem.store(10, 4);
 
-    //HALD FLAG = 1;
-    mem.store(0, 0b1001);
-    mem.store(1, 0);
+    unit.program(0, 4);
+    unit.program(1, 0);
+    unit.program(2, 1);
+    unit.program(3, 0);
+    unit.program(4, 0b1001);
+    unit.program(5, 0);
+    unit.program(6, 0b0111);
+    unit.program(7, 0b1111);
+    unit.program(8, 0b0001);
+    unit.program(9, 0b0010);
+    unit.program(10, 0b0010);
+    unit.program(11, 0b1111);
+    unit.program(12, 0b0000);
+    unit.program(13, 0b1110);
+    unit.program(14, 4);
 
-    //MOV 1111 < ACC
-    mem.store(2, 0b0111);
-    mem.store(3, 0b1111);
 
-    //MOV ALPHA < BETA
-    mem.store(4, 0b0001);
-    mem.store(5, 0b0010);
-
-    //MOV BETA < ACC
-    mem.store(6, 0b0010);
-    mem.store(7, 0b1111);
-
-    //MOV PC < 1110
-
-    mem.store(8, 0b0000);
-    mem.store(9, 0b1110);
 
     while(true)
     {
-        cpu.cycle();
+        unit.cycle();
     }
 
     return 0;

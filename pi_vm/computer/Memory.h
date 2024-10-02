@@ -9,15 +9,14 @@
 #include <cstdint>
 
 //Class representing computer RAM memory - template should be uint8, uint16, uint32 etc - depending on memory size
-template<typename T>
 class Memory {
 private:
     uint8_t* memory;
 
-    T size;
+    int size;
 
 public:
-    void store(T address, uint8_t data)
+    void store(int address, uint8_t data)
     {
         if(address<0 || address>=size)
         {
@@ -26,7 +25,7 @@ public:
         memory[address] = data;
     }
 
-    uint8_t load(T address)
+    uint8_t load(int address)
     {
         if(address<0 || address>=size)
         {
@@ -35,7 +34,7 @@ public:
         return memory[address];
     }
 
-    explicit Memory(T size)
+    explicit Memory(int size)
     {
         this->size = size;
         memory = (uint8_t*)malloc(sizeof (uint8_t)*size);

@@ -27,7 +27,7 @@ private:
     T* registers;
     int registryCount;
     int registryAddressSpaceByteCount;
-    Memory<T>& memory;
+    Memory& memory;
     T instructionRegistry[2];
     int wordWidth;
 
@@ -142,10 +142,19 @@ private:
 
 public:
 
+    T getRegister(T registryNumber)
+    {
+        if(registryNumber<0 || registryNumber>=registryCount)
+        {
+            throw std::invalid_argument("Processor: [external registry read] Registry number given: "+std::to_string(registryNumber)+". Should be larger or equal 0 and below "+std::to_string(registryCount));
+        }
+        return registers[registryNumber];
+    }
+
     T getAccumulator()
     {
         triggerAccumulator();
-        return registers[ACCUMULATOR];
+        return getRegister(ACCUMULATOR);
     }
 
     void cycle()
@@ -165,7 +174,15 @@ public:
 
     void setRegister(T registryNumber, T value)
     {
+        if(registryNumber<0 || registryNumber>=registryCount)
+        {
+            throw std::invalid_argument("Processor: [external registry write] Registry number given: "+std::to_string(registryNumber)+". Should be larger or equal 0 and below "+std::to_string(registryCount));
+        }
         registers[registryNumber] = value;
+        if(registryNumber==ALPHA || registryNumber==BETA)
+        {
+            triggerAccumulator();
+        }
     }
 
     void reset() {
@@ -178,7 +195,7 @@ public:
         flags[HALT_FLAG] = false;
     }
 
-    Processor(int registryAddressSpaceByteCount, Memory<T>& memory, int wordWidth):memory(memory)
+    Processor(int registryAddressSpaceByteCount, Memory& memory, int wordWidth):memory(memory)
     {
         if(registryAddressSpaceByteCount<2)
         {
