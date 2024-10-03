@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include "Memory.h"
 #include "../utils.h"
+#include "architecture/ComputerArchitecture.h"
 
 //This class is an abstraction of computer CPU - template should be uint8, uint16, uint32 etc - depending on how many bit system you want to have
 template<typename T>
@@ -24,12 +25,11 @@ public:
     static const int SKIP_FLAG = 1;
 
 private:
+    ComputerArchitecture* architecture;
+
     T* registers;
-    int registryCount;
-    int registryAddressSpaceByteCount;
-    Memory& memory;
-    T instructionRegistry[2];
-    int wordWidth;
+    Memory* memory;
+    uint64_t instructionRegistry[2];
     bool inProgrammingMode = false;
 
     bool lastOperationCarry;
@@ -44,12 +44,12 @@ private:
 
     void move(int destination, int source, bool reverse)
     {
-        if(destination>=registryCount)
+        if(destination>=architecture->getRegistryCount())
         {
-            throw std::invalid_argument("Processor: [moving] First argument of the MOV instruction needs to be a registry number. Number of registers: "+std::to_string(registryCount)
+            throw std::invalid_argument("Processor: [moving] First argument of the MOV instruction needs to be a registry number. Number of registers: "+std::to_string(architecture->getRegistryCount())
             +". Address given: "+std::to_string(destination));
         }
-        if(source<registryCount)    //Checking whether the source memory area is also a CPU register;
+        if(source<architecture->getRegistryCount())    //Checking whether the source memory area is also a CPU register;
         {
             if(reverse)
             {
@@ -64,11 +64,11 @@ private:
         {
             if(reverse)
             {
-                memory.store(source-registryCount, registers[destination]);    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
+                memory->store(source-architecture->getRegistryCount(), registers[destination]);    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
             }
             else
             {
-                registers[destination] = memory.load(source-registryCount);    //We are subtracting,  because registers are co-addressed with memory and take up a few bits of address space.
+                registers[destination] = memory->load(source-architecture->getRegistryCount());    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
             }
         }
     }
@@ -113,8 +113,8 @@ private:
         }
         else
         {
-            int result = registers[ALPHA] + registers[BETA];
-            lastOperationCarry = (result>>wordWidth);
+            uint64_t result = registers[ALPHA] + registers[BETA];
+            lastOperationCarry = (result>>architecture->getWordWidth());
             registers[ACCUMULATOR] = result;
         }
     }
@@ -145,9 +145,10 @@ public:
 
     T getRegister(T registryNumber)
     {
-        if(registryNumber<0 || registryNumber>=registryCount)
+        if(registryNumber<0 || registryNumber>=architecture->getRegistryCount())
         {
-            throw std::invalid_argument("Processor: [external registry read] Registry number given: "+std::to_string(registryNumber)+". Should be larger or equal 0 and below "+std::to_string(registryCount));
+            throw std::invalid_argument("Processor: [external registry read] Registry number given: "+std::to_string(registryNumber)
+            +". Should be larger or equal 0 and below "+std::to_string(architecture->getRegistryCount()));
         }
         return registers[registryNumber];
     }
@@ -164,8 +165,8 @@ public:
             if (flags[HALT_FLAG]) {
                 return;
             }
-            instructionRegistry[0] = memory.load(registers[PROGRAM_COUNTER] - registryCount);
-            instructionRegistry[1] = memory.load((registers[PROGRAM_COUNTER] + 1) - registryCount);
+            instructionRegistry[0] = memory->load(registers[PROGRAM_COUNTER] - architecture->getRegistryCount());
+            instructionRegistry[1] = memory->load((registers[PROGRAM_COUNTER] + 1) - architecture->getRegistryCount());
             registers[PROGRAM_COUNTER] += 2;
             decodeAndExecute();
         }
@@ -173,9 +174,10 @@ public:
 
     void setRegister(T registryNumber, T value)
     {
-        if(registryNumber<0 || registryNumber>=registryCount)
+        if(registryNumber<0 || registryNumber>=architecture->getRegistryCount())
         {
-            throw std::invalid_argument("Processor: [external registry write] Registry number given: "+std::to_string(registryNumber)+". Should be larger or equal 0 and below "+std::to_string(registryCount));
+            throw std::invalid_argument("Processor: [external registry write] Registry number given: "+std::to_string(registryNumber)
+            +". Should be larger or equal 0 and below "+std::to_string(architecture->getRegistryCount()));
         }
         registers[registryNumber] = value;
         if(registryNumber==ALPHA || registryNumber==BETA)
@@ -185,7 +187,7 @@ public:
     }
 
     void reset() {
-        registers[PROGRAM_COUNTER] = registryCount;
+        registers[PROGRAM_COUNTER] = architecture->getRegistryCount();
         triggerAccumulator();
     }
 
@@ -209,16 +211,10 @@ public:
         inProgrammingMode = false;
     }
 
-    Processor(int registryAddressSpaceByteCount, Memory& memory, int wordWidth):memory(memory)
+    Processor(ComputerArchitecture* architecture, Memory* memory):memory(memory)
     {
-        if(registryAddressSpaceByteCount<2)
-        {
-            throw std::invalid_argument("Processor: [initializing] Address space for CPU registers must be at least 2 bits wide - minimum 4 registers need to be created.");
-        }
-        registryCount = powerOfTwo(registryAddressSpaceByteCount);
-        registers = (T*)malloc(registryCount*sizeof(T));
-        this->wordWidth = wordWidth;
-        this->registryAddressSpaceByteCount = registryAddressSpaceByteCount;
+        this->architecture = architecture;
+        registers = (T*)malloc(architecture->getRegistryCount()*sizeof(T));
         reset();
     }
 

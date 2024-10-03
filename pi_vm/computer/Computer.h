@@ -8,66 +8,74 @@
 
 #include "Memory.h"
 #include "Processor.h"
+#include "architecture/Bit4.h"
 
 class Computer {
 private:
-    Memory ram;
-    Processor<uint32_t> cpu;
-
+    Memory* ram;
+    Processor<uint32_t>* cpu;
+    ComputerArchitecture* architecture;
 
 
 public:
 
     void cycle()
     {
-        cpu.cycle();
+        cpu->cycle();
     }
 
     void resume()
     {
-        cpu.resume();
+        cpu->resume();
     }
 
     void programmingMode()
     {
-        cpu.programmingMode();
+        cpu->programmingMode();
     }
 
     void runningMode()
     {
-        cpu.runningMode();
+        cpu->runningMode();
     }
 
     int output()
     {
-        return (int)cpu.getAccumulator();
+        return (int)cpu->getAccumulator();
     }
 
     void input(int registryContent)
     {
-        cpu.setRegister(Processor<uint32_t>::ACCUMULATOR, registryContent);
+        cpu->setRegister(Processor<uint32_t>::ACCUMULATOR, registryContent);
     }
 
     bool isStopped()
     {
-        return cpu.isStopped();
+        return cpu->isStopped();
     };
 
     void program(uint32_t address, uint32_t value)
     {
         if(address<4)
         {
-            cpu.setRegister(address, value);
+            cpu->setRegister(address, value);
         }
         else
         {
-            ram.store(address-4, value&0xFF);
+            ram->store(address-4, value&0xFF);
         }
     }
 
-    Computer():ram(12),cpu(2, ram, 4)
+    Computer()
     {
+        architecture = new Bit4;
+        ram = new Memory(12);
+        cpu = new Processor<uint32_t>(architecture, ram);
+    }
 
+    ~Computer()
+    {
+        delete architecture;
     }
 
 };

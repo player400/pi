@@ -9,4 +9,5 @@ add_executable(pi_vm main.cpp
         utils.h
         computer/Computer.h
         computer/architecture/ComputerArchitecture.h
-        ControllerInterface.h)
+        ControllerInterface.h
+        computer/architecture/Bit4.h)

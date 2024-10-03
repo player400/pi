@@ -23,11 +23,23 @@ public:
             if(microcontroller.isStopped())
             {
                 //For now input is required to resume a stopped processor - you can just type the same thing that's already in output, so that nothing wil change.
-                int input;
-                std::cout<<"Code execution STOPPED by an internal command. Provide input to resume:"<<std::endl;
-                std::cin>>input;
-                microcontroller.input(input);
-                microcontroller.resume();
+                std::string input;
+                while(true)
+                {
+                    system("clear");
+                    std::cout << "Output: " << microcontroller.output() << std::endl;
+                    std::cout<<"Code execution STOPPED by an internal command. Enter a number and press enter to provide input. Type 'r' to resume execution."<<std::endl;
+                    std::cin>>input;
+                    if(input!="r")
+                    {
+                        microcontroller.input(stoi(input));
+                    }
+                    else
+                    {
+                        microcontroller.resume();
+                        break;
+                    }
+                }
             }
         }
     }
