@@ -15,4 +15,10 @@ int powerOfTwo(int exponent)
     return result;
 }
 
+enum LogicalOperation
+{
+    ADD,
+    MULTIPLY
+};
+
 #endif //PI_VM_UTILS_H

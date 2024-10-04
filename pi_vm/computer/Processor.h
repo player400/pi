@@ -29,20 +29,14 @@ private:
 
     T* registers;
     Memory* memory;
-    uint64_t instructionRegistry[2];
+    uint64_t instructionRegistry;
     bool inProgrammingMode = false;
 
     bool lastOperationCarry;
 
     bool flags[3];
 
-    enum LogicalOperation
-    {
-        ADD,
-        MULTIPLY
-    };
-
-    void move(int destination, int source, bool reverse)
+    void mov(int destination, int source, bool reverse)
     {
         if(destination>=architecture->getRegistryCount())
         {
@@ -73,18 +67,18 @@ private:
         }
     }
 
-    void flag(int flagNumber, bool value, bool negate, bool includeAccumulator, bool includeCarry, LogicalOperation operation)
+    void flag(int flagNumber, bool value, bool negate, bool includeRegister, bool includeCarry, int sourceRegistryNumber, LogicalOperation operation)
     {
-        bool accumulator = (bool)registers[ACCUMULATOR];
-        if(includeAccumulator)
+        bool sourceRegistry = (bool)registers[sourceRegistryNumber];
+        if(includeRegister)
         {
             if(operation==ADD)
             {
-                value = value | accumulator;
+                value = value | sourceRegistry;
             }
             else if(operation==MULTIPLY)
             {
-                value = value & accumulator;
+                value = value & sourceRegistry;
             }
         }
         if(includeCarry)
@@ -122,21 +116,29 @@ private:
     void decodeAndExecute()
     {
 
-        if((0b1000&instructionRegistry[0])==0)
+        if(architecture->isMoveOperation(instructionRegistry))
         {
             if(flags[SKIP_FLAG])
             {
                 return;
             }
-            move(0b11&instructionRegistry[0], instructionRegistry[1], 0b100&instructionRegistry[0]);
+            mov(architecture->getMovDestination(instructionRegistry),
+                 architecture->getMovSource(instructionRegistry),
+                 architecture->isMoveDirectionReversed(instructionRegistry));
         }
         else
         {
-            if(flags[SKIP_FLAG] && ((0b110&instructionRegistry[0])>>1)!=SKIP_FLAG)
+            if(flags[SKIP_FLAG] && (architecture->getFlagFlagNumber(instructionRegistry))!=SKIP_FLAG)   //If skip flag is set all instructions are skipped, except FLAG instruction changing the skip flag
             {
                 return;
             }
-            flag((0b110&instructionRegistry[0])>>1, 0b1&instructionRegistry[0], 0b10&instructionRegistry[1], 0b100&instructionRegistry[1], 0b1000&instructionRegistry[1], 0b1&instructionRegistry[1] ? MULTIPLY : ADD);
+            flag(architecture->getFlagFlagNumber(instructionRegistry),
+                 architecture->getFlagValue(instructionRegistry),
+                 architecture->isFlagNegated(instructionRegistry),
+                 architecture->isFlagRegisterIncluded(instructionRegistry),
+                 architecture->isFlagCarryIncluded(instructionRegistry),
+                 architecture->getFlagSourceRegisterNumber(instructionRegistry),
+                 architecture->getFlagLogicalOperation(instructionRegistry));
         }
         triggerAccumulator();
     }
@@ -165,8 +167,9 @@ public:
             if (flags[HALT_FLAG]) {
                 return;
             }
-            instructionRegistry[0] = memory->load(registers[PROGRAM_COUNTER] - architecture->getRegistryCount());
-            instructionRegistry[1] = memory->load((registers[PROGRAM_COUNTER] + 1) - architecture->getRegistryCount());
+            instructionRegistry = memory->load(registers[PROGRAM_COUNTER] - architecture->getRegistryCount());
+            instructionRegistry = instructionRegistry << architecture->getWordWidth();
+            instructionRegistry += memory->load((registers[PROGRAM_COUNTER] + 1) - architecture->getRegistryCount());
             registers[PROGRAM_COUNTER] += 2;
             decodeAndExecute();
         }

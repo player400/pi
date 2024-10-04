@@ -41,7 +41,7 @@ public:
 
     int output()
     {
-        return (int)cpu->getAccumulator();
+        return (int)cpu->getRegister(Processor<uint32_t>::ACCUMULATOR);
     }
 
     void input(int registryContent)
@@ -62,14 +62,14 @@ public:
         }
         else
         {
-            ram->store(address-4, value&0xFF);
+            ram->store(address-architecture->getRegistryCount(), value);
         }
     }
 
     Computer()
     {
         architecture = new Bit4;
-        ram = new Memory(12);
+        ram = new Memory(powerOfTwo(architecture->getMemoryAddressWidth()) - architecture->getRegistryCount());
         cpu = new Processor<uint32_t>(architecture, ram);
     }
 
