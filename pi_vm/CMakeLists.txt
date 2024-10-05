@@ -10,4 +10,5 @@ add_executable(pi_vm main.cpp
         computer/Computer.h
         computer/architecture/ComputerArchitecture.h
         ControllerInterface.h
-        computer/architecture/Bit4.h)
+        computer/architecture/Bit4.h
+        ProgramArgumentParser.h)

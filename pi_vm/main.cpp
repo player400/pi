@@ -1,12 +1,22 @@
 #include <iostream>
+
+
+#define BAD_ARGUMENTS_EXIT 5
+
 #include "computer/Memory.h"
 #include "computer/Processor.h"
 #include "computer/Computer.h"
 #include "ControllerInterface.h"
+#include "ProgramArgumentParser.h"
 #include <thread>
 
 
-int main() {
+
+
+int main(int argc, char* argv[]) {
+
+    std::vector<ParsedOption>options;
+    parseProgramArguments(argc,argv, options);
 
 
     Computer unit;
