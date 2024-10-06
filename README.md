@@ -48,7 +48,7 @@ Supporting:\
 
 ## Further plans
 
-Short term
+Short term\
 _______________________________________________________________________
     -developing an 8-bit version of the architecture (ISA)
     -continued development of the emulatorm, including support for 8-bit
@@ -58,11 +58,11 @@ _______________________________________________________________________
 
 <br/>
 <br/>
-Long term
-_______________________________________________________________________
-    -developing an 8-bit PI computer on FPGA
-    -actually building a computer with logic gates
-    -compilation of C to the PI assembly
+Long term\
+_______________________________________________________________________\
+    -developing an 8-bit PI computer on FPGA\
+    -actually building a computer with logic gates\
+    -compilation of C to the PI assembly\
 
     
 ## Navigation
