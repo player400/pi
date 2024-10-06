@@ -19,6 +19,11 @@ Navigation:
 -readme.txt - you are here
 -CMakeLists.txt - (up to date) cmake
 -.gitignore - git ignore
+/example_executables - folder containing example code to run on the emulator
+	-readme.txt - details about the example code (including the file structure)
+	-example_program.hex - Hexadecimal file with a program calculating the Fibonacci sequence
+	-example_program.bin - Binary file with a program calculating the Fibonacci sequence
+	-example_program.dec - Decimal file with a program calculating the Fibonacci sequence
 -ControllerInterface.h - Class responsible for interacting between the user and the emulated machine.
 -main.cpp - main function that sets everything up
 -ProgramArgumentProcessing.h - Code for parsing command line program arguments
