@@ -24,7 +24,7 @@ ISA (Instruction Set Architecture) document.\
 Availible for:\
     -4bit version\
 \
-\
+
 
 Schematic
 _______________________________________________________________________
@@ -32,7 +32,7 @@ Logical design/simulation (on the logic gate level) of a PI computer made with t
 Availible for:\
     -4bit version\
 \
-\
+
 
 
 Emulation
@@ -41,7 +41,7 @@ There is an emulator of a PI computer developed in C++. This one has it's own se
 Supporting:\
     -4 bit version\
     \
-    \
+    
 
 ## Further plans
 
@@ -51,16 +51,14 @@ _______________________________________________________________________
     -continued development of the emulatorm, including support for 8-bit
     -(maybe) a Circuit Verse schematic for the 8-bit version
     -an assembler (ie. a program turning assembly into machine code)
-    \
-    \
+
     
-Long term
+\Long term
 _______________________________________________________________________
     -developing an 8-bit PI computer on FPGA
     -actually building a computer with logic gates
     -compilation of C to the PI assembly
-    \
-    \
+
     
 ## Navigation
 
