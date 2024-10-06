@@ -23,7 +23,8 @@ _______________________________________________________________________
 ISA (Instruction Set Architecture) document.\
 Availible for:\
     -4bit version\
-\
+<br/>
+<br/>
 
 
 Schematic
@@ -31,7 +32,8 @@ _______________________________________________________________________
 Logical design/simulation (on the logic gate level) of a PI computer made with the Circuit Verse software.\ 
 Availible for:\
     -4bit version\
-\
+<br/>
+<br/>
 
 
 
@@ -40,7 +42,8 @@ _______________________________________________________________________
 There is an emulator of a PI computer developed in C++. This one has it's own separate readme file.\
 Supporting:\
     -4 bit version\
-    \
+<br/>
+<br/>
     
 
 ## Further plans
@@ -52,8 +55,10 @@ _______________________________________________________________________
     -(maybe) a Circuit Verse schematic for the 8-bit version
     -an assembler (ie. a program turning assembly into machine code)
 
-    
-\Long term
+
+<br/>
+<br/>
+Long term
 _______________________________________________________________________
     -developing an 8-bit PI computer on FPGA
     -actually building a computer with logic gates
