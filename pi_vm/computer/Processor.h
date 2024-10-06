@@ -145,7 +145,7 @@ private:
 
 public:
 
-    T getRegister(T registryNumber)
+    T getRegister(T registryNumber) const
     {
         if(registryNumber<0 || registryNumber>=architecture->getRegistryCount())
         {
@@ -153,12 +153,6 @@ public:
             +". Should be larger or equal 0 and below "+std::to_string(architecture->getRegistryCount()));
         }
         return registers[registryNumber];
-    }
-
-    T getAccumulator()
-    {
-        triggerAccumulator();
-        return getRegister(ACCUMULATOR);
     }
 
     void cycle()
@@ -194,7 +188,7 @@ public:
         triggerAccumulator();
     }
 
-    bool isStopped()
+    bool isStopped() const
     {
         return flags[HALT_FLAG];
     }
@@ -225,6 +219,8 @@ public:
     {
         free(registers);
     }
+
+
 };
 
 

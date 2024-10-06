@@ -5,6 +5,8 @@
 #ifndef PI_VM_UTILS_H
 #define PI_VM_UTILS_H
 
+#define BYTE_SIZE 8
+
 int powerOfTwo(int exponent)
 {
     int result=1;
@@ -20,5 +22,15 @@ enum LogicalOperation
     ADD,
     MULTIPLY
 };
+
+enum ExecutableFileType
+{
+    HEXADECIMAL,
+    BINARY,
+    DECIMAL,
+    NONE
+};
+
+
 
 #endif //PI_VM_UTILS_H

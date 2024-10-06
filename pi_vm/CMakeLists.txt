@@ -11,4 +11,9 @@ add_executable(pi_vm main.cpp
         computer/architecture/ComputerArchitecture.h
         ControllerInterface.h
         computer/architecture/Bit4.h
-        ProgramArgumentParser.h)
+        ProgramArgumentProcessing.h
+        programmer/ExecutableFileReader/ExecutableFileReader.h
+        programmer/ExecutableFileReader/DecimalFileReader.h
+        programmer/ExecutableFileReader/HexadecimalFileReader.h
+        programmer/ExecutableFileReader/BinaryFileReader.h
+        programmer/Programmer.h)

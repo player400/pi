@@ -19,6 +19,16 @@ private:
 
 public:
 
+    int getRegistryCount() const
+    {
+        return architecture->getRegistryCount();
+    }
+
+    int getArchitectureWidth() const
+    {
+        return architecture->getWordWidth();
+    }
+
     void cycle()
     {
         cpu->cycle();
@@ -39,7 +49,7 @@ public:
         cpu->runningMode();
     }
 
-    int output()
+    int output() const
     {
         return (int)cpu->getRegister(Processor<uint32_t>::ACCUMULATOR);
     }
@@ -49,7 +59,7 @@ public:
         cpu->setRegister(Processor<uint32_t>::ACCUMULATOR, registryContent);
     }
 
-    bool isStopped()
+    bool isStopped() const
     {
         return cpu->isStopped();
     };
@@ -76,6 +86,8 @@ public:
     ~Computer()
     {
         delete architecture;
+        delete ram;
+        delete cpu;
     }
 
 };

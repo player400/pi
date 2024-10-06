@@ -2,19 +2,19 @@
 // Created by player402 on 04.10.24.
 //
 
-#ifndef PI_VM_PROGRAMARGUMENTPARSER_H
-#define PI_VM_PROGRAMARGUMENTPARSER_H
+#ifndef PI_VM_PROGRAMARGUMENTPROCESSING_H
+#define PI_VM_PROGRAMARGUMENTPROCESSING_H
 
 #include <string>
 #include <vector>
 #include <stdexcept>
-
+#include "programmer/ExecutableFileReader/ExecutableFileReader.h"
 
 enum Options
 {
-    HEX,
-    DECIMAL,
-    BINARY,
+    HEX_FILE,
+    DECIMAL_FILE,
+    BINARY_FILE,
     HELP,
     VERSION,
     UNRECOGNIZED,
@@ -36,9 +36,9 @@ struct ParsedOption
 };
 
 const OptionType optionTypes[] = {
-        {HEX, "h", 1},
-        {DECIMAL, "d", 1},
-        {BINARY, "b", 1},
+        {HEX_FILE, "h", 1},
+        {DECIMAL_FILE, "d", 1},
+        {BINARY_FILE, "b", 1},
         {HELP, "help", 0},
         {VERSION, "version", 0},
         {UNRECOGNIZED, "[unrecognized option]", 0}
@@ -89,4 +89,53 @@ void parseProgramArguments(int argc, char* argv[], std::vector<ParsedOption>& op
     }
 }
 
-#endif //PI_VM_PROGRAMARGUMENTPARSER_H
+
+void applyProgramArguments(bool& displayHelp, bool& displayVersion, ExecutableFileType& fileType, std::string& fileName, int argc, char* argv[])
+{
+    fileType = NONE;
+    displayHelp = false;
+    displayVersion = false;
+    std::vector<ParsedOption>options;
+    parseProgramArguments(argc,argv, options);
+
+    for(auto & option : options)
+    {
+        if(option.type==BINARY_FILE)
+        {
+            if(fileType!=NONE)
+            {
+                throw std::invalid_argument("General: [determining program file type] You cannot import multiple files into one emulation.");
+            }
+            fileType = BINARY;
+            fileName = option.arguments[0];
+        }
+        if(option.type==HEX_FILE)
+        {
+            if(fileType!=NONE)
+            {
+                throw std::invalid_argument("General: [determining program file type] You cannot import multiple files into one emulation.");
+            }
+            fileType = HEXADECIMAL;
+            fileName = option.arguments[0];
+        }
+        if(option.type==DECIMAL_FILE)
+        {
+            if(fileType!=NONE)
+            {
+                throw std::invalid_argument("General: [determining program file type] You cannot import multiple files into one emulation.");
+            }
+            fileType = DECIMAL;
+            fileName = option.arguments[0];
+        }
+        if(option.type==HELP)
+        {
+            displayHelp=true;
+        }
+        if(option.type==VERSION)
+        {
+            displayVersion=true;
+        }
+    }
+}
+
+#endif //PI_VM_PROGRAMARGUMENTPROCESSING_H
