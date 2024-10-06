@@ -20,24 +20,28 @@ More information is availible in the ISA document. Currently only availible only
 
 Documentation
 _______________________________________________________________________
-ISA (Instruction Set Architecture) document.
-Availible for: 
-    -4bit version
-
+ISA (Instruction Set Architecture) document.\
+Availible for:\
+    -4bit version\
+\
+\
 
 Schematic
 _______________________________________________________________________
-Logical design/simulation (on the logic gate level) of a PI computer made with the Circuit Verse software. 
-Availible for:
-    -4bit version
+Logical design/simulation (on the logic gate level) of a PI computer made with the Circuit Verse software.\ 
+Availible for:\
+    -4bit version\
+\
+\
 
 
 Emulation
 _______________________________________________________________________
-There is an emulator of a PI computer developed in C++. This one has it's own separate readme file.
-Supporting:
-    -4 bit version
-    
+There is an emulator of a PI computer developed in C++. This one has it's own separate readme file.\
+Supporting:\
+    -4 bit version\
+    \
+    \
 
 ## Further plans
 
@@ -47,13 +51,16 @@ _______________________________________________________________________
     -continued development of the emulatorm, including support for 8-bit
     -(maybe) a Circuit Verse schematic for the 8-bit version
     -an assembler (ie. a program turning assembly into machine code)
+    \
+    \
     
 Long term
 _______________________________________________________________________
     -developing an 8-bit PI computer on FPGA
     -actually building a computer with logic gates
     -compilation of C to the PI assembly
-    
+    \
+    \
     
 ## Navigation
 
