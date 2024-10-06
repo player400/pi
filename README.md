@@ -48,21 +48,21 @@ Supporting:\
 
 ## Further plans
 
-Short term\
-_______________________________________________________________________
-    -developing an 8-bit version of the architecture (ISA)
-    -continued development of the emulatorm, including support for 8-bit
-    -(maybe) a Circuit Verse schematic for the 8-bit version
-    -an assembler (ie. a program turning assembly into machine code)
+Short term<br/>
+_______________________________________________________________________<br/>
+    -developing an 8-bit version of the architecture (ISA)<br/>
+    -continued development of the emulatorm, including support for 8-bit<br/>
+    -(maybe) a Circuit Verse schematic for the 8-bit version<br/>
+    -an assembler (ie. a program turning assembly into machine code)<br/>
 
 
 <br/>
 <br/>
-Long term\
-_______________________________________________________________________\
-    -developing an 8-bit PI computer on FPGA\
-    -actually building a computer with logic gates\
-    -compilation of C to the PI assembly\
+Long term<br/>
+_______________________________________________________________________<br/>
+    -developing an 8-bit PI computer on FPGA<br/>
+    -actually building a computer with logic gates<br/>
+    -compilation of C to the PI assembly<br/>
 
     
 ## Navigation
