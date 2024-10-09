@@ -17,12 +17,10 @@ public:
     void run()
     {
         while(true) {
-
             system("clear");
             std::cout << "Output: " << microcontroller.output() << std::endl;
             if(microcontroller.isStopped())
             {
-                //For now input is required to resume a stopped processor - you can just type the same thing that's already in output, so that nothing wil change.
                 std::string input;
                 system("clear");
                 while(true)

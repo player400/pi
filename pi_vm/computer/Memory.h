@@ -7,6 +7,8 @@
 
 
 #include <cstdint>
+#include <stdexcept>
+#include <cstdlib>
 
 //Class representing computer RAM memory - template should be uint8, uint16, uint32 etc - depending on memory size
 class Memory {

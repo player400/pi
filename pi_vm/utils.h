@@ -5,6 +5,10 @@
 #ifndef PI_VM_UTILS_H
 #define PI_VM_UTILS_H
 
+#include <cstdlib>
+#include <iostream>
+
+
 #define BYTE_SIZE 8
 
 int powerOfTwo(int exponent)

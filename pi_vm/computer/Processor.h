@@ -32,7 +32,7 @@ private:
     uint64_t instructionRegistry;
     bool inProgrammingMode = false;
 
-    bool lastOperationCarry;
+    bool lastOperationCarry = false;
 
     bool flags[3];
 
@@ -186,6 +186,9 @@ public:
     void reset() {
         registers[PROGRAM_COUNTER] = architecture->getRegistryCount();
         triggerAccumulator();
+        flags[HALT_FLAG] = false;
+        flags[SKIP_FLAG] = false;
+        flags[ALU_FLAG] = false;
     }
 
     bool isStopped() const
