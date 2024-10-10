@@ -161,9 +161,17 @@ public:
             if (flags[HALT_FLAG]) {
                 return;
             }
-            instructionRegistry = memory->load(registers[PROGRAM_COUNTER] - architecture->getRegistryCount());
-            instructionRegistry = instructionRegistry << architecture->getWordWidth();
-            instructionRegistry += memory->load((registers[PROGRAM_COUNTER] + 1) - architecture->getRegistryCount());
+            if (registers[PROGRAM_COUNTER] < architecture->getRegistryCount()) {
+                instructionRegistry = registers[registers[PROGRAM_COUNTER]];
+                instructionRegistry = instructionRegistry << architecture->getWordWidth();
+                instructionRegistry += registers[registers[PROGRAM_COUNTER] + 1];
+            }
+            else
+            {
+                instructionRegistry = memory->load(registers[PROGRAM_COUNTER] - architecture->getRegistryCount());
+                instructionRegistry = instructionRegistry << architecture->getWordWidth();
+                instructionRegistry += memory->load((registers[PROGRAM_COUNTER] + 1) - architecture->getRegistryCount());
+            }
             registers[PROGRAM_COUNTER] += 2;
             decodeAndExecute();
         }
