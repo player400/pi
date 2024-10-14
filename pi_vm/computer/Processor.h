@@ -36,6 +36,32 @@ private:
 
     bool flags[3];
 
+public:
+    T getRegister(T registryNumber) const
+    {
+        if(registryNumber<0 || registryNumber>=architecture->getRegistryCount())
+        {
+            throw std::invalid_argument("Processor: [external registry read] Registry number given: "+std::to_string(registryNumber)
+                                        +". Should be larger or equal 0 and below "+std::to_string(architecture->getRegistryCount()));
+        }
+        return registers[registryNumber];
+    }
+
+    void setRegister(T registryNumber, T value)
+    {
+        if(registryNumber<0 || registryNumber>=architecture->getRegistryCount())
+        {
+            throw std::invalid_argument("Processor: [external registry write] Registry number given: "+std::to_string(registryNumber)
+                                        +". Should be larger or equal 0 and below "+std::to_string(architecture->getRegistryCount()));
+        }
+        registers[registryNumber] = value;
+        if(registryNumber==ALPHA || registryNumber==BETA)
+        {
+            triggerAccumulator();
+        }
+    }
+
+private:
     void mov(int destination, int source, bool reverse)
     {
         if(destination>=architecture->getRegistryCount())
@@ -47,29 +73,29 @@ private:
         {
             if(reverse)
             {
-                registers[source] = registers[destination];
+                setRegister(source, getRegister(destination));
             }
             else
             {
-                registers[destination] = registers[source];
+                setRegister(destination, getRegister(source));
             }
         }
         else
         {
             if(reverse)
             {
-                memory->store(source-architecture->getRegistryCount(), registers[destination]);    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
+                memory->store(source-architecture->getRegistryCount(), getRegister(destination));    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
             }
             else
             {
-                registers[destination] = memory->load(source-architecture->getRegistryCount());    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
+                setRegister(destination, memory->load(source-architecture->getRegistryCount()));    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
             }
         }
     }
 
     void flag(int flagNumber, bool value, bool negate, bool includeRegister, bool includeCarry, int sourceRegistryNumber, LogicalOperation operation)
     {
-        bool sourceRegistry = (bool)registers[sourceRegistryNumber];
+        bool sourceRegistry = (bool) getRegister(sourceRegistryNumber);
         if(includeRegister)
         {
             if(operation==ADD)
@@ -103,13 +129,13 @@ private:
     {
         if(flags[ALU_FLAG])
         {
-            registers[ACCUMULATOR] = ~(registers[ALPHA] & registers[BETA]);
+            setRegister(ACCUMULATOR,  ~(getRegister(ALPHA) & getRegister(BETA)));
         }
         else
         {
-            uint64_t result = registers[ALPHA] + registers[BETA];
-            lastOperationCarry = (result>>architecture->getWordWidth());
-            registers[ACCUMULATOR] = result;
+            uint64_t result = getRegister(ALPHA) + getRegister(BETA);
+            lastOperationCarry = ((result>>architecture->getWordWidth())&0b1);
+            setRegister(ACCUMULATOR, result);
         }
     }
 
@@ -144,17 +170,6 @@ private:
     }
 
 public:
-
-    T getRegister(T registryNumber) const
-    {
-        if(registryNumber<0 || registryNumber>=architecture->getRegistryCount())
-        {
-            throw std::invalid_argument("Processor: [external registry read] Registry number given: "+std::to_string(registryNumber)
-            +". Should be larger or equal 0 and below "+std::to_string(architecture->getRegistryCount()));
-        }
-        return registers[registryNumber];
-    }
-
     void cycle()
     {
         if(!inProgrammingMode) {
@@ -162,37 +177,23 @@ public:
                 return;
             }
             if (registers[PROGRAM_COUNTER] < architecture->getRegistryCount()) {
-                instructionRegistry = registers[registers[PROGRAM_COUNTER]];
+                instructionRegistry = getRegister(getRegister(PROGRAM_COUNTER));
                 instructionRegistry = instructionRegistry << architecture->getWordWidth();
-                instructionRegistry += registers[registers[PROGRAM_COUNTER] + 1];
+                instructionRegistry += getRegister(getRegister(PROGRAM_COUNTER)+1);
             }
             else
             {
-                instructionRegistry = memory->load(registers[PROGRAM_COUNTER] - architecture->getRegistryCount());
+                instructionRegistry = memory->load(getRegister(PROGRAM_COUNTER) - architecture->getRegistryCount());
                 instructionRegistry = instructionRegistry << architecture->getWordWidth();
-                instructionRegistry += memory->load((registers[PROGRAM_COUNTER] + 1) - architecture->getRegistryCount());
+                instructionRegistry += memory->load((getRegister(PROGRAM_COUNTER) + 1) - architecture->getRegistryCount());
             }
-            registers[PROGRAM_COUNTER] += 2;
+            setRegister(PROGRAM_COUNTER, getRegister(PROGRAM_COUNTER)+2);
             decodeAndExecute();
         }
     }
 
-    void setRegister(T registryNumber, T value)
-    {
-        if(registryNumber<0 || registryNumber>=architecture->getRegistryCount())
-        {
-            throw std::invalid_argument("Processor: [external registry write] Registry number given: "+std::to_string(registryNumber)
-            +". Should be larger or equal 0 and below "+std::to_string(architecture->getRegistryCount()));
-        }
-        registers[registryNumber] = value;
-        if(registryNumber==ALPHA || registryNumber==BETA)
-        {
-            triggerAccumulator();
-        }
-    }
-
     void reset() {
-        registers[PROGRAM_COUNTER] = architecture->getRegistryCount();
+        setRegister(PROGRAM_COUNTER, architecture->getRegistryCount());
         triggerAccumulator();
         flags[HALT_FLAG] = false;
         flags[SKIP_FLAG] = false;
