@@ -49,12 +49,23 @@ public:
 
     void setRegister(T registryNumber, T value)
     {
+        uint64_t bitmask = 0;
+        uint64_t bitmaskConstructor=1;
+        for(int i=0;i<architecture->getWordWidth();i++)
+        {
+            bitmask = bitmask | bitmaskConstructor;
+            bitmaskConstructor = bitmaskConstructor<<1;
+        }
         if(registryNumber<0 || registryNumber>=architecture->getRegistryCount())
         {
             throw std::invalid_argument("Processor: [external registry write] Registry number given: "+std::to_string(registryNumber)
                                         +". Should be larger or equal 0 and below "+std::to_string(architecture->getRegistryCount()));
         }
-        registers[registryNumber] = value;
+        if(registryNumber==PROGRAM_COUNTER && value%2==1)
+        {
+            value--;
+        }
+        registers[registryNumber] = bitmask&value;
         if(registryNumber==ALPHA || registryNumber==BETA)
         {
             triggerAccumulator();
@@ -166,7 +177,6 @@ private:
                  architecture->getFlagSourceRegisterNumber(instructionRegistry),
                  architecture->getFlagLogicalOperation(instructionRegistry));
         }
-        triggerAccumulator();
     }
 
 public:
