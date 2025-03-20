@@ -41,6 +41,11 @@ public:
 
     virtual int getFlagSourceRegisterNumber(uint64_t instruction) = 0;
 
+    virtual int getMemoryCellWidth()
+    {
+        return 8;
+    }
+
     virtual LogicalOperation getFlagLogicalOperation(uint64_t instruction) = 0;
 
 

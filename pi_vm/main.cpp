@@ -17,7 +17,11 @@ int main(int argc, char* argv[]) {
 
     applyProgramArguments(displayHelp, displayVersion, fileType, fileName, argc, argv);
 
-    Computer unit;
+    ComputerArchitecture* piVersion;
+
+    piVersion = new Bit4;
+
+    Computer unit(*piVersion);
 
     Programmer programmer(fileType);
 

@@ -135,6 +135,11 @@ public:
         return defaultFlagSourceRegistry;
     }
 
+    int getMemoryCellWidth() override
+    {
+        return 4;
+    }
+
     LogicalOperation getFlagLogicalOperation(uint64_t instruction) override
     {
         return ((instruction & flagLogicalOperationBitmask) >> flagLogicalOperationShift) == flagMultiplyLogicalOperationCode ? MULTIPLY : ADD;

@@ -20,29 +20,30 @@ public:
     static const int BETA = 2;
     static const int ACCUMULATOR = 3;
 
-    static const int ALU_FLAG = 2;
+    static const int ALU_FLAG_2 = 3;
+    static const int ALU_FLAG_1 = 2;
     static const int HALT_FLAG = 0;
     static const int SKIP_FLAG = 1;
 
 private:
-    ComputerArchitecture* architecture;
+    ComputerArchitecture& architecture;
 
     T* registers;
-    Memory* memory;
+    Memory& memory;
     uint64_t instructionRegistry;
     bool inProgrammingMode = false;
 
     bool lastOperationCarry = false;
 
-    bool flags[3];
+    bool flags[4];
 
 public:
     T getRegister(T registryNumber) const
     {
-        if(registryNumber<0 || registryNumber>=architecture->getRegistryCount())
+        if(registryNumber<0 || registryNumber>=architecture.getRegistryCount())
         {
             throw std::invalid_argument("Processor: [external registry read] Registry number given: "+std::to_string(registryNumber)
-                                        +". Should be larger or equal 0 and below "+std::to_string(architecture->getRegistryCount()));
+                                        +". Should be larger or equal 0 and below "+std::to_string(architecture.getRegistryCount()));
         }
         return registers[registryNumber];
     }
@@ -51,15 +52,15 @@ public:
     {
         uint64_t bitmask = 0;
         uint64_t bitmaskConstructor=1;
-        for(int i=0;i<architecture->getWordWidth();i++)
+        for(int i=0;i<architecture.getWordWidth();i++)
         {
             bitmask = bitmask | bitmaskConstructor;
             bitmaskConstructor = bitmaskConstructor<<1;
         }
-        if(registryNumber<0 || registryNumber>=architecture->getRegistryCount())
+        if(registryNumber<0 || registryNumber>=architecture.getRegistryCount())
         {
             throw std::invalid_argument("Processor: [external registry write] Registry number given: "+std::to_string(registryNumber)
-                                        +". Should be larger or equal 0 and below "+std::to_string(architecture->getRegistryCount()));
+                                        +". Should be larger or equal 0 and below "+std::to_string(architecture.getRegistryCount()));
         }
         if(registryNumber==PROGRAM_COUNTER && value%2==1)
         {
@@ -75,12 +76,12 @@ public:
 private:
     void mov(int destination, int source, bool reverse)
     {
-        if(destination>=architecture->getRegistryCount())
+        if(destination>=architecture.getRegistryCount())
         {
-            throw std::invalid_argument("Processor: [moving] First argument of the MOV instruction needs to be a registry number. Number of registers: "+std::to_string(architecture->getRegistryCount())
+            throw std::invalid_argument("Processor: [moving] First argument of the MOV instruction needs to be a registry number. Number of registers: "+std::to_string(architecture.getRegistryCount())
             +". Address given: "+std::to_string(destination));
         }
-        if(source<architecture->getRegistryCount())    //Checking whether the source memory area is also a CPU register;
+        if(source<architecture.getRegistryCount())    //Checking whether the source memory area is also a CPU register;
         {
             if(reverse)
             {
@@ -95,19 +96,19 @@ private:
         {
             if(reverse)
             {
-                memory->store(source-architecture->getRegistryCount(), getRegister(destination));    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
+                memory.store(source-architecture.getRegistryCount(), getRegister(destination));    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
             }
             else
             {
-                setRegister(destination, memory->load(source-architecture->getRegistryCount()));    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
+                setRegister(destination, memory.load(source-architecture.getRegistryCount()));    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
             }
         }
     }
 
-    void flag(int flagNumber, bool value, bool negate, bool includeRegister, bool includeCarry, int sourceRegistryNumber, LogicalOperation operation)
+    void flag(int flagNumber, bool value, bool negate, bool includeMemory, bool includeCarry, int sourceMemoryAddress, LogicalOperation operation)
     {
-        bool sourceRegistry = (bool) getRegister(sourceRegistryNumber);
-        if(includeRegister)
+        bool sourceRegistry = (bool) getRegister(sourceMemoryAddress);
+        if(includeMemory)
         {
             if(operation==ADD)
             {
@@ -138,14 +139,29 @@ private:
 
     void triggerAccumulator()
     {
-        if(flags[ALU_FLAG])
+        if(flags[ALU_FLAG_1])
         {
-            setRegister(ACCUMULATOR,  ~(getRegister(ALPHA) & getRegister(BETA)));
+            if(flags[ALU_FLAG_2])
+            {
+                setRegister(ACCUMULATOR,  ~(getRegister(ALPHA) | getRegister(BETA)));
+            }
+            else
+            {
+                setRegister(ACCUMULATOR,  ~(getRegister(ALPHA) & getRegister(BETA)));
+            }
         }
         else
         {
-            uint64_t result = getRegister(ALPHA) + getRegister(BETA);
-            lastOperationCarry = ((result>>architecture->getWordWidth())&0b1);
+            uint64_t result;
+            if(flags[ALU_FLAG_2])
+            {
+                result = getRegister(ALPHA) - getRegister(BETA);
+            }
+            else
+            {
+                result = getRegister(ALPHA) + getRegister(BETA);
+            }
+            lastOperationCarry = ((result>>architecture.getWordWidth())&0b1);
             setRegister(ACCUMULATOR, result);
         }
     }
@@ -153,29 +169,29 @@ private:
     void decodeAndExecute()
     {
 
-        if(architecture->isMoveOperation(instructionRegistry))
+        if(architecture.isMoveOperation(instructionRegistry))
         {
             if(flags[SKIP_FLAG])
             {
                 return;
             }
-            mov(architecture->getMovDestination(instructionRegistry),
-                 architecture->getMovSource(instructionRegistry),
-                 architecture->isMoveDirectionReversed(instructionRegistry));
+            mov(architecture.getMovDestination(instructionRegistry),
+                 architecture.getMovSource(instructionRegistry),
+                 architecture.isMoveDirectionReversed(instructionRegistry));
         }
         else
         {
-            if(flags[SKIP_FLAG] && (architecture->getFlagFlagNumber(instructionRegistry))!=SKIP_FLAG)   //If skip flag is set all instructions are skipped, except FLAG instruction changing the skip flag
+            if(flags[SKIP_FLAG] && (architecture.getFlagFlagNumber(instructionRegistry))!=SKIP_FLAG)   //If skip flag is set all instructions are skipped, except FLAG instruction changing the skip flag
             {
                 return;
             }
-            flag(architecture->getFlagFlagNumber(instructionRegistry),
-                 architecture->getFlagValue(instructionRegistry),
-                 architecture->isFlagNegated(instructionRegistry),
-                 architecture->isFlagRegisterIncluded(instructionRegistry),
-                 architecture->isFlagCarryIncluded(instructionRegistry),
-                 architecture->getFlagSourceRegisterNumber(instructionRegistry),
-                 architecture->getFlagLogicalOperation(instructionRegistry));
+            flag(architecture.getFlagFlagNumber(instructionRegistry),
+                 architecture.getFlagValue(instructionRegistry),
+                 architecture.isFlagNegated(instructionRegistry),
+                 architecture.isFlagRegisterIncluded(instructionRegistry),
+                 architecture.isFlagCarryIncluded(instructionRegistry),
+                 architecture.getFlagSourceRegisterNumber(instructionRegistry),
+                 architecture.getFlagLogicalOperation(instructionRegistry));
         }
     }
 
@@ -186,16 +202,20 @@ public:
             if (flags[HALT_FLAG]) {
                 return;
             }
-            if (registers[PROGRAM_COUNTER] < architecture->getRegistryCount()) {
+            if (registers[PROGRAM_COUNTER] < architecture.getRegistryCount()) {
                 instructionRegistry = getRegister(getRegister(PROGRAM_COUNTER));
-                instructionRegistry = instructionRegistry << architecture->getWordWidth();
+                instructionRegistry = instructionRegistry << architecture.getWordWidth();
                 instructionRegistry += getRegister(getRegister(PROGRAM_COUNTER)+1);
             }
             else
             {
-                instructionRegistry = memory->load(getRegister(PROGRAM_COUNTER) - architecture->getRegistryCount());
-                instructionRegistry = instructionRegistry << architecture->getWordWidth();
-                instructionRegistry += memory->load((getRegister(PROGRAM_COUNTER) + 1) - architecture->getRegistryCount());
+
+                instructionRegistry = memory.load(getRegister(PROGRAM_COUNTER) - architecture.getRegistryCount());
+                for(int i=1;i<2*(architecture.getWordWidth()/architecture.getMemoryCellWidth());i++)
+                {
+                    instructionRegistry = instructionRegistry << architecture.getWordWidth();
+                    instructionRegistry += memory.load((getRegister(PROGRAM_COUNTER) + i) - architecture.getRegistryCount());
+                }
             }
             setRegister(PROGRAM_COUNTER, getRegister(PROGRAM_COUNTER)+2);
             decodeAndExecute();
@@ -203,11 +223,10 @@ public:
     }
 
     void reset() {
-        setRegister(PROGRAM_COUNTER, architecture->getRegistryCount());
-        triggerAccumulator();
         flags[HALT_FLAG] = false;
         flags[SKIP_FLAG] = false;
-        flags[ALU_FLAG] = false;
+        flags[ALU_FLAG_1] = false;
+        flags[ALU_FLAG_2] = false;
     }
 
     bool isStopped() const
@@ -230,10 +249,9 @@ public:
         inProgrammingMode = false;
     }
 
-    Processor(ComputerArchitecture* architecture, Memory* memory):memory(memory)
+    Processor(ComputerArchitecture& architecture, Memory& memory):memory(memory),architecture(architecture)
     {
-        this->architecture = architecture;
-        registers = (T*)malloc(architecture->getRegistryCount()*sizeof(T));
+        registers = (T*)malloc(architecture.getRegistryCount()*sizeof(T));
         reset();
     }
 

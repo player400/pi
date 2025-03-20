@@ -14,19 +14,19 @@ class Computer {
 private:
     Memory* ram;
     Processor<uint32_t>* cpu;
-    ComputerArchitecture* architecture;
+    ComputerArchitecture& architecture;
 
 
 public:
 
     int getRegistryCount() const
     {
-        return architecture->getRegistryCount();
+        return architecture.getRegistryCount();
     }
 
     int getArchitectureWidth() const
     {
-        return architecture->getWordWidth();
+        return architecture.getWordWidth();
     }
 
     void cycle()
@@ -72,20 +72,18 @@ public:
         }
         else
         {
-            ram->store(address-architecture->getRegistryCount(), value);
+            ram->store(address-architecture.getRegistryCount(), value);
         }
     }
 
-    Computer()
+    Computer(ComputerArchitecture& piVersion):architecture(piVersion)
     {
-        architecture = new Bit4;
-        ram = new Memory(powerOfTwo(architecture->getMemoryAddressWidth()) - architecture->getRegistryCount());
-        cpu = new Processor<uint32_t>(architecture, ram);
+        ram = new Memory(powerOfTwo(architecture.getMemoryAddressWidth()) - architecture.getRegistryCount());
+        cpu = new Processor<uint32_t>(architecture, *ram);
     }
 
     ~Computer()
     {
-        delete architecture;
         delete ram;
         delete cpu;
     }
