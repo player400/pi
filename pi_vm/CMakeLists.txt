@@ -16,4 +16,5 @@ add_executable(pi_vm main.cpp
         programmer/ExecutableFileReader/DecimalFileReader.h
         programmer/ExecutableFileReader/HexadecimalFileReader.h
         programmer/ExecutableFileReader/BinaryFileReader.h
-        programmer/Programmer.h)
+        programmer/Programmer.h
+        computer/architecture/Bit8.h)

@@ -3,6 +3,7 @@
 #include "ControllerInterface.h"
 #include "ProgramArgumentProcessing.h"
 #include "programmer/Programmer.h"
+#include "computer/architecture/Bit8.h"
 #include <thread>
 
 
@@ -19,7 +20,7 @@ int main(int argc, char* argv[]) {
 
     ComputerArchitecture* piVersion;
 
-    piVersion = new Bit4;
+    piVersion = new Bit8;
 
     Computer unit(*piVersion);
 

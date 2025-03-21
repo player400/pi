@@ -66,7 +66,7 @@ public:
 
     void program(uint32_t address, uint32_t value)
     {
-        if(address<4)
+        if(address<architecture.getRegistryCount())
         {
             cpu->setRegister(address, value);
         }
