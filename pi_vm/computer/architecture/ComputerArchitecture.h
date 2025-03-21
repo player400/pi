@@ -48,7 +48,6 @@ public:
 
     virtual LogicalOperation getFlagLogicalOperation(uint64_t instruction) = 0;
 
-
 };
 
 

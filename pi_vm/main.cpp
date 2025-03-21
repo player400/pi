@@ -8,6 +8,18 @@
 
 
 
+ComputerArchitecture* getArchitecture(int architecture)
+{
+    if(architecture==8)
+    {
+        return new Bit8;
+    }
+    else if(architecture==4)
+    {
+        return new Bit4;
+    }
+    throw std::invalid_argument("The "+std::to_string(architecture)+"-bit architecture is not supported.");
+}
 
 
 int main(int argc, char* argv[]) {
@@ -15,12 +27,11 @@ int main(int argc, char* argv[]) {
     std::string fileName;
     bool displayHelp;
     bool displayVersion;
+    int architecture;
 
-    applyProgramArguments(displayHelp, displayVersion, fileType, fileName, argc, argv);
+    applyProgramArguments(displayHelp, displayVersion, fileType, fileName, architecture, argc, argv);
 
-    ComputerArchitecture* piVersion;
-
-    piVersion = new Bit8;
+    ComputerArchitecture* piVersion = getArchitecture(architecture);
 
     Computer unit(*piVersion);
 

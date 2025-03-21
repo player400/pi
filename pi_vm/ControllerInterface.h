@@ -25,7 +25,9 @@ public:
                 system("clear");
                 while(true)
                 {
-                    std::cout << "Output: " << (char)microcontroller.output() << std::endl;
+                    std::cout << "Output: " << std::dec<<microcontroller.output();
+                    std::cout<<" 0x"<<std::hex<< microcontroller.output();
+                    std::cout<<" " <<(char)microcontroller.output()<<std::endl;
                     std::cout<<"Code execution STOPPED by an internal command. Enter a number and press enter to provide input. Type 'r' to resume execution."<<std::endl;
                     std::cin>>input;
                     if(input!="r")

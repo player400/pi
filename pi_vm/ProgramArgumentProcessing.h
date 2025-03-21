@@ -15,6 +15,7 @@ enum Options
     HEX_FILE,
     DECIMAL_FILE,
     BINARY_FILE,
+    ARCHITECTURE,
     HELP,
     VERSION,
     UNRECOGNIZED,
@@ -39,6 +40,7 @@ const OptionType optionTypes[] = {
         {HEX_FILE, "h", 1},
         {DECIMAL_FILE, "d", 1},
         {BINARY_FILE, "b", 1},
+        {ARCHITECTURE, "a", 1},
         {HELP, "help", 0},
         {VERSION, "version", 0},
         {UNRECOGNIZED, "[unrecognized option]", 0}
@@ -90,14 +92,14 @@ void parseProgramArguments(int argc, char* argv[], std::vector<ParsedOption>& op
 }
 
 
-void applyProgramArguments(bool& displayHelp, bool& displayVersion, ExecutableFileType& fileType, std::string& fileName, int argc, char* argv[])
+void applyProgramArguments(bool& displayHelp, bool& displayVersion, ExecutableFileType& fileType, std::string& fileName, int& architecture, int argc, char* argv[])
 {
     fileType = NONE;
     displayHelp = false;
     displayVersion = false;
     std::vector<ParsedOption>options;
     parseProgramArguments(argc,argv, options);
-
+    architecture = 8;
     for(auto & option : options)
     {
         if(option.type==BINARY_FILE)
@@ -134,6 +136,10 @@ void applyProgramArguments(bool& displayHelp, bool& displayVersion, ExecutableFi
         if(option.type==VERSION)
         {
             displayVersion=true;
+        }
+        if(option.type == ARCHITECTURE)
+        {
+            architecture = stoi(option.arguments[0]);
         }
     }
 }

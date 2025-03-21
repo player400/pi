@@ -9,9 +9,13 @@ There is a lot of exceptin throwing done in the application - if something doesn
 
 In general, you need to provide a file with the program for the emulated machine. Those can come in 3 formats: binary, hex and decimal. Here is how you run the program:
 
-Hex file:	'pi_vm -h code.hex'
-Binary file:	'pi_vm -b code.bin'
-Decimal file:	'pi vm -d code.dec' 
+Command line arguments:
+
+pi_vm <-h|-b|-d> <file name> [-a] [architecture (4 bit, 8 bit etc) - 8 bit is default]
+
+Hex file - 8 bit:	'pi_vm -h code.hex'
+Binary file - 8 bit:	'pi_vm -b code.bin -a 8'
+Decimal file - 4 bit:	'pi vm -d code.dec -a 4' 
 
 
 Navigation:
@@ -21,9 +25,13 @@ Navigation:
 -.gitignore - git ignore
 /example_executables - folder containing example code to run on the emulator
 	-readme.txt - details about the example code (including the file structure)
-	-example_program.hex - Hexadecimal file with a program calculating the Fibonacci sequence
-	-example_program.bin - Binary file with a program calculating the Fibonacci sequence
-	-example_program.dec - Decimal file with a program calculating the Fibonacci sequence
+	/4-bit
+		-example_program.hex - Hexadecimal file with a program calculating the Fibonacci sequence
+		-example_program.bin - Binary file with a program calculating the Fibonacci sequence
+		-example_program.dec - Decimal file with a program calculating the Fibonacci sequence
+		-is_odd.bin - Binary file with a program deciding if a number is odd
+	/8-bit 
+		-hello_world.hex - Hexadecimal file with a program sending Hello, world! to output
 -ControllerInterface.h - Class responsible for interacting between the user and the emulated machine.
 -main.cpp - main function that sets everything up
 -ProgramArgumentProcessing.h - Code for parsing command line program arguments
@@ -35,6 +43,7 @@ Navigation:
 	/architecture - here there are several classes, that serve as the injected dependency in the dependency injection design pattern.
 		-ComputerArchitecture.h - abstract parent class, provides multiple methods (mostly to the Processor) that are responsible for differenciating between 4bit, 8bit, 16bit etc. architectures
 		-Bit4.h - dependency injected into the CPU for the 4-bit version of PI
+		-Bit8.h - dependency injected into the CPU for the 8-bit version of PI
 /programmer - (as in, the device that programms flash memory of a microcontroler)
 	-Programmer.h - class responsible for programming (uploading exacutable file) into the emulator
 	/ExecutableFileReader - code used by the Programmer class to read files

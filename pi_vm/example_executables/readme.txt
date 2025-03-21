@@ -1,7 +1,5 @@
 Those files are example executables for the PI emulator.
 
-Code in those files calculates the Fibonacci sequence. 
-
 Look into the PI emulator readme for information on how to run them.
 
 
