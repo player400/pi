@@ -51,7 +51,14 @@ public:
 
     int output() const
     {
-        return (int)cpu->getRegister(Processor<uint32_t>::ACCUMULATOR);
+        try
+        {
+            return (int)cpu->getRegister(Processor<uint32_t>::ACCUMULATOR);
+        }
+        catch(std::invalid_argument& e)
+        {
+            throw std::invalid_argument("Computer: [reading output] Exception was thrown by the processor, while attempting to read the value of Accumulator: "+std::string(e.what()));
+        }
     }
 
     void input(int registryContent)

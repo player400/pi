@@ -21,7 +21,7 @@ public:
         file.open(fileName, std::fstream::in | std::ios::binary);
         if(!file.good())
         {
-            throw std::invalid_argument("Programmer: [file reading] Could not open the file '"+fileName+"'. Check the spelling. Remember to use either absolute paths or paths relative to this file.");
+            throw std::invalid_argument("Binary File Reader: [file reading] Could not open the file '"+fileName+"'. Check the spelling. Remember to use either absolute paths or paths relative to this file.");
         }
 
         file.seekg(0, std::ios_base::end);

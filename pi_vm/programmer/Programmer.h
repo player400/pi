@@ -17,7 +17,14 @@ class Programmer {
 public:
     void program(std::string& fileName, Computer& unit)
     {
-        reader->read(fileName);
+        try
+        {
+            reader->read(fileName);
+        }
+        catch(std::invalid_argument& e)
+        {
+            throw std::invalid_argument("Programmer: [file reading] Exception was thrown while reading the program file: "+ std::string(e.what()));
+        }
         unit.programmingMode();
         int architectureWidth = reader->getArchitectureBitWidth();
         if(architectureWidth != unit.getArchitectureWidth())
@@ -35,12 +42,26 @@ public:
                 byte = byte<<(BYTE_SIZE*j);
                 currentRegister = currentRegister|byte;
             }
-            unit.program(i, currentRegister);
+            try
+            {
+                unit.program(i, currentRegister);
+            }
+            catch(std::invalid_argument& e)
+            {
+                throw std::invalid_argument("Programmer: [programming] Exception was thrown by the machine while programming registers: "+std::string(e.what()));
+            }
         }
         uint64_t address = unit.getRegistryCount();
         while(reader->isNextByte())
         {
-            unit.program(address++, reader->nextByte());
+            try
+            {
+                unit.program(address++, reader->nextByte());
+            }
+            catch(std::invalid_argument& e)
+            {
+                throw std::invalid_argument("Programmer: [programming] Exception was thrown by the machine while programming memory: "+std::string(e.what()));
+            }
         }
         unit.runningMode();
         reader->reset();

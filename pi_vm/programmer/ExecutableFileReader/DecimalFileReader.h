@@ -19,7 +19,7 @@ public:
         file.open(fileName, std::fstream::in);
         if(!file.good())
         {
-            throw std::invalid_argument("Programmer: [file reading] Could not open the file '"+fileName+"'. Check the spelling. Remember to use either absolute paths or paths relative to this file.");
+            throw std::invalid_argument("Decimal File Reader: [file reading] Could not open the file '"+fileName+"'. Check the spelling. Remember to use either absolute paths or paths relative to this file.");
         }
         file>>architectureBitWidth;
         bytes.clear();

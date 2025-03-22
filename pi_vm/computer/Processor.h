@@ -37,12 +37,50 @@ private:
 
     bool flags[4];
 
+    void triggerAccumulator()
+    {
+        try
+        {
+            if(flags[ALU_FLAG_1])
+            {
+                if(flags[ALU_FLAG_2])
+                {
+                    setRegister(ACCUMULATOR,  ~(getRegister(ALPHA) | getRegister(BETA)));
+                }
+                else
+                {
+                    setRegister(ACCUMULATOR,  ~(getRegister(ALPHA) & getRegister(BETA)));
+                }
+            }
+            else
+            {
+                uint64_t result;
+                if(flags[ALU_FLAG_2])
+                {
+                    result = getRegister(ALPHA) - getRegister(BETA);
+                }
+                else
+                {
+                    result = getRegister(ALPHA) + getRegister(BETA);
+                }
+                lastOperationCarry = ((result>>architecture.getWordWidth())&0b1);
+                setRegister(ACCUMULATOR, result);
+            }
+        }
+        catch (std::invalid_argument &e) {
+            throw std::invalid_argument(
+                    "Processor: [alu calculations] Exception was thrown, while attempting to compute the new value of ALU: " +
+                    std::string(e.what()));
+        }
+    }
+
+
 public:
     T getRegister(T registryNumber) const
     {
         if(registryNumber<0 || registryNumber>=architecture.getRegistryCount())
         {
-            throw std::invalid_argument("Processor: [external registry read] Registry number given: "+std::to_string(registryNumber)
+            throw std::invalid_argument("Processor: [registry read] Registry number given: "+std::to_string(registryNumber)
                                         +". Should be larger or equal 0 and below "+std::to_string(architecture.getRegistryCount()));
         }
         return registers[registryNumber];
@@ -59,7 +97,7 @@ public:
         }
         if(registryNumber<0 || registryNumber>=architecture.getRegistryCount())
         {
-            throw std::invalid_argument("Processor: [external registry write] Registry number given: "+std::to_string(registryNumber)
+            throw std::invalid_argument("Processor: [registry write] Registry number given: "+std::to_string(registryNumber)
                                         +". Should be larger or equal 0 and below "+std::to_string(architecture.getRegistryCount()));
         }
         if(registryNumber==PROGRAM_COUNTER && value%2==1)
@@ -81,35 +119,50 @@ private:
             throw std::invalid_argument("Processor: [moving] First argument of the MOV instruction needs to be a registry number. Number of registers: "+std::to_string(architecture.getRegistryCount())
             +". Address given: "+std::to_string(destination));
         }
-        if(source<architecture.getRegistryCount())    //Checking whether the source memory area is also a CPU register;
+        try
         {
-            if(reverse)
+            if(source<architecture.getRegistryCount())    //Checking whether the source memory area is also a CPU register;
             {
-                setRegister(source, getRegister(destination));
+                if(reverse)
+                {
+                    setRegister(source, getRegister(destination));
+                }
+                else
+                {
+                    setRegister(destination, getRegister(source));
+                }
             }
             else
             {
-                setRegister(destination, getRegister(source));
+                if(reverse)
+                {
+                    memory.store(source-architecture.getRegistryCount(), getRegister(destination));    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
+                }
+                else
+                {
+                    setRegister(destination, memory.load(source-architecture.getRegistryCount()));    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
+                }
             }
         }
-        else
+        catch(std::invalid_argument& e)
         {
-            if(reverse)
-            {
-                memory.store(source-architecture.getRegistryCount(), getRegister(destination));    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
-            }
-            else
-            {
-                setRegister(destination, memory.load(source-architecture.getRegistryCount()));    //We are subtracting, because registers are co-addressed with memory and take up a few bits of address space.
-            }
+            throw std::invalid_argument("Processor: [moving] Exception was thrown, while executing the MOV instruction. Current value of Program Counter (post-incrementation) is "+std::to_string(registers[PROGRAM_COUNTER])+": "+std::string(e.what()));
         }
     }
 
     void flag(int flagNumber, bool value, bool negate, bool includeMemory, bool includeCarry, int sourceMemoryAddress, LogicalOperation operation)
     {
-        bool sourceRegistry = (bool) getRegister(sourceMemoryAddress);
         if(includeMemory)
         {
+            bool sourceRegistry;
+            try
+            {
+                sourceRegistry = sourceMemoryAddress < architecture.getRegistryCount() ? (bool) getRegister(sourceMemoryAddress) : memory.load(sourceMemoryAddress-architecture.getRegistryCount());
+            }
+            catch(std::invalid_argument& e)
+            {
+                throw std::invalid_argument("Processor: [flag] Exception was thrown, while fetching value of register or memory to execute the FLAG instruction. Current value of Program Counter (post-incrementation) is "+std::to_string(registers[PROGRAM_COUNTER])+": "+std::string(e.what()));
+            }
             if(operation==ADD)
             {
                 value = value | sourceRegistry;
@@ -137,34 +190,6 @@ private:
         flags[flagNumber] = value;
     }
 
-    void triggerAccumulator()
-    {
-        if(flags[ALU_FLAG_1])
-        {
-            if(flags[ALU_FLAG_2])
-            {
-                setRegister(ACCUMULATOR,  ~(getRegister(ALPHA) | getRegister(BETA)));
-            }
-            else
-            {
-                setRegister(ACCUMULATOR,  ~(getRegister(ALPHA) & getRegister(BETA)));
-            }
-        }
-        else
-        {
-            uint64_t result;
-            if(flags[ALU_FLAG_2])
-            {
-                result = getRegister(ALPHA) - getRegister(BETA);
-            }
-            else
-            {
-                result = getRegister(ALPHA) + getRegister(BETA);
-            }
-            lastOperationCarry = ((result>>architecture.getWordWidth())&0b1);
-            setRegister(ACCUMULATOR, result);
-        }
-    }
 
     void decodeAndExecute()
     {
@@ -202,22 +227,52 @@ public:
             if (flags[HALT_FLAG]) {
                 return;
             }
-            if (registers[PROGRAM_COUNTER] < architecture.getRegistryCount()) {
-                instructionRegistry = getRegister(getRegister(PROGRAM_COUNTER));
-                instructionRegistry = instructionRegistry << architecture.getWordWidth();
-                instructionRegistry += getRegister(getRegister(PROGRAM_COUNTER)+1);
-            }
-            else
-            {
+            try {
+                if (registers[PROGRAM_COUNTER] < architecture.getRegistryCount()) {
+                    try {
+                        instructionRegistry = getRegister(getRegister(PROGRAM_COUNTER));
+                        instructionRegistry = instructionRegistry << architecture.getWordWidth();
+                        instructionRegistry += getRegister(getRegister(PROGRAM_COUNTER) + 1);
+                    }
+                    catch (std::invalid_argument &e) {
+                        throw std::invalid_argument(
+                                "Processor: [reading instruction from registers] Exception was thrown, while attempting to read the value of a register: " +
+                                std::string(e.what()));
+                    }
+                } else {
+                    try {
+                        instructionRegistry = memory.load(
+                                getRegister(PROGRAM_COUNTER) - architecture.getRegistryCount());
+                        for (int i = 1;
+                             i < 2 * (architecture.getWordWidth() / architecture.getMemoryCellWidth()); i++) {
+                            instructionRegistry = instructionRegistry << architecture.getWordWidth();
+                            instructionRegistry += memory.load(
+                                    (getRegister(PROGRAM_COUNTER) + i) - architecture.getRegistryCount());
 
-                instructionRegistry = memory.load(getRegister(PROGRAM_COUNTER) - architecture.getRegistryCount());
-                for(int i=1;i<2*(architecture.getWordWidth()/architecture.getMemoryCellWidth());i++)
-                {
-                    instructionRegistry = instructionRegistry << architecture.getWordWidth();
-                    instructionRegistry += memory.load((getRegister(PROGRAM_COUNTER) + i) - architecture.getRegistryCount());
+                        }
+                    }
+                    catch (std::invalid_argument &e) {
+                        throw std::invalid_argument(
+                                "Processor: [reading instruction from memory] Exception was thrown, while attempting to read registers or memory: " +
+                                std::string(e.what()));
+                    }
                 }
             }
-            setRegister(PROGRAM_COUNTER, getRegister(PROGRAM_COUNTER)+2);
+            catch (std::invalid_argument &e) {
+                throw std::invalid_argument(
+                        "Processor: [reading program counter] Exception was thrown, while attempting to read the value of Program Counter (register 0): " +
+                        std::string(e.what()));
+            }
+            try
+            {
+                setRegister(PROGRAM_COUNTER, getRegister(PROGRAM_COUNTER)+2);
+            }
+            catch(std::invalid_argument& e)
+            {
+                throw std::invalid_argument(
+                        "Processor: [incrementing program counter] Exception was thrown, while attempting to increment the value of Program Counter (register 0): " +
+                        std::string(e.what()));
+            }
             decodeAndExecute();
         }
     }

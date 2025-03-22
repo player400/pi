@@ -23,28 +23,30 @@ ComputerArchitecture* getArchitecture(int architecture)
 
 
 int main(int argc, char* argv[]) {
-    ExecutableFileType fileType;
-    std::string fileName;
-    bool displayHelp;
-    bool displayVersion;
-    int architecture;
 
-    applyProgramArguments(displayHelp, displayVersion, fileType, fileName, architecture, argc, argv);
-
-    ComputerArchitecture* piVersion = getArchitecture(architecture);
-
-    Computer unit(*piVersion);
-
-    Programmer programmer(fileType);
-
-    programmer.program(fileName, unit);
-
-    ControllerInterface interface(unit);
-
-    std::thread t1([&interface](){interface.run();});
-
-    while(true)
+    try
     {
-        unit.cycle();
+        ExecutableFileType fileType;
+        std::string fileName;
+        int architecture;
+        applyProgramArguments(fileType, fileName, architecture, argc, argv);
+
+        ComputerArchitecture* piVersion = getArchitecture(architecture);
+        Computer unit(*piVersion);
+
+        Programmer programmer(fileType);
+        programmer.program(fileName, unit);
+
+        ControllerInterface interface(unit);
+        std::thread t1([&interface](){interface.run();});
+
+        while(true)
+        {
+            unit.cycle();
+        }
+    }
+    catch(std::invalid_argument& e)
+    {
+        std::cerr<<"Critical error: "+std::string(e.what())<<std::endl;
     }
 }
