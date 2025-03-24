@@ -18,16 +18,30 @@ public:
     {
         while(true) {
             system("clear");
-            std::cout << "Output: " << microcontroller.output() << std::endl;
+            try
+            {
+                std::cout << "Output: " << microcontroller.output() << std::endl;
+            }
+            catch(std::exception& e)
+            {
+                throw std::invalid_argument("ControllerInterface: [printing output] Exception was thrown, while printing microcontroller output: "+std::string(e.what()));
+            }
             if(microcontroller.isStopped())
             {
                 std::string input;
                 system("clear");
                 while(true)
                 {
-                    std::cout << "Output: " << std::dec<<microcontroller.output();
-                    std::cout<<" 0x"<<std::hex<< microcontroller.output();
-                    std::cout<<" " <<(char)microcontroller.output()<<std::endl;
+                    try
+                    {
+                        std::cout << "Output: " << std::dec<<microcontroller.output();
+                        std::cout<<" 0x"<<std::hex<< microcontroller.output();
+                        std::cout<<" " <<(char)microcontroller.output()<<std::endl;
+                    }
+                    catch(std::exception& e)
+                    {
+                        throw std::invalid_argument("ControllerInterface: [printing output] Exception was thrown, while printing microcontroller output: "+std::string(e.what()));
+                    }
                     std::cout<<"Code execution STOPPED by an internal command. Enter a number and press enter to provide input. Type 'r' to resume execution."<<std::endl;
                     std::cin>>input;
                     if(input!="r")
@@ -37,9 +51,9 @@ public:
                             microcontroller.input(stoi(input));
                             system("clear");
                         }
-                        catch (std::invalid_argument& exception)
+                        catch (std::exception& e)
                         {
-                            std::cerr<<"NON-FATAL User Command Line Interface: [parsing input] Input should be an integer or 'r'. Input given: '"+input+"'."<<std::endl;
+                            throw std::invalid_argument("ControllerInterface: [taking input] The Computer threw an exception, while taking input: "+std::string(e.what()));
                         }
                     }
                     else

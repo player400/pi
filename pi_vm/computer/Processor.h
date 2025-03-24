@@ -67,7 +67,7 @@ private:
                 setRegister(ACCUMULATOR, result);
             }
         }
-        catch (std::invalid_argument &e) {
+        catch (std::exception &e) {
             throw std::invalid_argument(
                     "Processor: [alu calculations] Exception was thrown, while attempting to compute the new value of ALU: " +
                     std::string(e.what()));
@@ -144,7 +144,7 @@ private:
                 }
             }
         }
-        catch(std::invalid_argument& e)
+        catch(std::exception& e)
         {
             throw std::invalid_argument("Processor: [moving] Exception was thrown, while executing the MOV instruction. Current value of Program Counter (post-incrementation) is "+std::to_string(registers[PROGRAM_COUNTER])+": "+std::string(e.what()));
         }
@@ -159,7 +159,7 @@ private:
             {
                 sourceRegistry = sourceMemoryAddress < architecture.getRegistryCount() ? (bool) getRegister(sourceMemoryAddress) : memory.load(sourceMemoryAddress-architecture.getRegistryCount());
             }
-            catch(std::invalid_argument& e)
+            catch(std::exception& e)
             {
                 throw std::invalid_argument("Processor: [flag] Exception was thrown, while fetching value of register or memory to execute the FLAG instruction. Current value of Program Counter (post-incrementation) is "+std::to_string(registers[PROGRAM_COUNTER])+": "+std::string(e.what()));
             }
@@ -234,7 +234,7 @@ public:
                         instructionRegistry = instructionRegistry << architecture.getWordWidth();
                         instructionRegistry += getRegister(getRegister(PROGRAM_COUNTER) + 1);
                     }
-                    catch (std::invalid_argument &e) {
+                    catch (std::exception &e) {
                         throw std::invalid_argument(
                                 "Processor: [reading instruction from registers] Exception was thrown, while attempting to read the value of a register: " +
                                 std::string(e.what()));
@@ -251,14 +251,14 @@ public:
 
                         }
                     }
-                    catch (std::invalid_argument &e) {
+                    catch (std::exception &e) {
                         throw std::invalid_argument(
                                 "Processor: [reading instruction from memory] Exception was thrown, while attempting to read registers or memory: " +
                                 std::string(e.what()));
                     }
                 }
             }
-            catch (std::invalid_argument &e) {
+            catch (std::exception &e) {
                 throw std::invalid_argument(
                         "Processor: [reading program counter] Exception was thrown, while attempting to read the value of Program Counter (register 0): " +
                         std::string(e.what()));
@@ -267,7 +267,7 @@ public:
             {
                 setRegister(PROGRAM_COUNTER, getRegister(PROGRAM_COUNTER)+2);
             }
-            catch(std::invalid_argument& e)
+            catch(std::exception& e)
             {
                 throw std::invalid_argument(
                         "Processor: [incrementing program counter] Exception was thrown, while attempting to increment the value of Program Counter (register 0): " +

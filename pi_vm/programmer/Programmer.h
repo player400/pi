@@ -21,7 +21,7 @@ public:
         {
             reader->read(fileName);
         }
-        catch(std::invalid_argument& e)
+        catch(std::exception& e)
         {
             throw std::invalid_argument("Programmer: [file reading] Exception was thrown while reading the program file: "+ std::string(e.what()));
         }
@@ -46,7 +46,7 @@ public:
             {
                 unit.program(i, currentRegister);
             }
-            catch(std::invalid_argument& e)
+            catch(std::exception& e)
             {
                 throw std::invalid_argument("Programmer: [programming] Exception was thrown by the machine while programming registers: "+std::string(e.what()));
             }
@@ -58,7 +58,7 @@ public:
             {
                 unit.program(address++, reader->nextByte());
             }
-            catch(std::invalid_argument& e)
+            catch(std::exception& e)
             {
                 throw std::invalid_argument("Programmer: [programming] Exception was thrown by the machine while programming memory: "+std::string(e.what()));
             }

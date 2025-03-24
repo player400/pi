@@ -31,7 +31,14 @@ public:
 
     void cycle()
     {
-        cpu->cycle();
+        try
+        {
+            cpu->cycle();
+        }
+        catch(std::exception& e)
+        {
+            throw std::invalid_argument("Computer: [clock cycle] The CPU threw an exception, when attempting a clock cycle: "+std::string(e.what()));
+        }
     }
 
     void resume()
@@ -55,7 +62,7 @@ public:
         {
             return (int)cpu->getRegister(Processor<uint32_t>::ACCUMULATOR);
         }
-        catch(std::invalid_argument& e)
+        catch(std::exception& e)
         {
             throw std::invalid_argument("Computer: [reading output] Exception was thrown by the processor, while attempting to read the value of Accumulator: "+std::string(e.what()));
         }
@@ -63,7 +70,14 @@ public:
 
     void input(int registryContent)
     {
-        cpu->setRegister(Processor<uint32_t>::ACCUMULATOR, registryContent);
+        try
+        {
+            cpu->setRegister(Processor<uint32_t>::ACCUMULATOR, registryContent);
+        }
+        catch(std::exception& e)
+        {
+            throw std::invalid_argument("Computer: [taking input] Exception was thrown by the CPU when setting the ACCUMULATOR: "+std::string(e.what()));
+        }
     }
 
     bool isStopped() const
@@ -75,18 +89,39 @@ public:
     {
         if(address<architecture.getRegistryCount())
         {
-            cpu->setRegister(address, value);
+            try
+            {
+                cpu->setRegister(address, value);
+            }
+            catch(std::exception& e)
+            {
+                throw std::invalid_argument("Computer: [programming register] Exception was thrown by the CPU when setting the value of "+std::to_string(address)+": "+std::string(e.what()));
+            }
         }
         else
         {
-            ram->store(address-architecture.getRegistryCount(), value);
+            try
+            {
+                ram->store(address-architecture.getRegistryCount(), value);
+            }
+            catch(std::exception& e)
+            {
+                throw std::invalid_argument("Computer: [programming memory] Exception was thrown by the CPU when setting the value of "+std::to_string(address)+" memory address: "+std::string(e.what()));
+            }
         }
     }
 
     Computer(ComputerArchitecture& piVersion):architecture(piVersion)
     {
-        ram = new Memory(powerOfTwo(architecture.getMemoryAddressWidth()) - architecture.getRegistryCount());
-        cpu = new Processor<uint32_t>(architecture, *ram);
+        try
+        {
+            ram = new Memory(powerOfTwo(architecture.getMemoryAddressWidth()) - architecture.getRegistryCount());
+            cpu = new Processor<uint32_t>(architecture, *ram);
+        }
+        catch(std::exception& e)
+        {
+            throw std::invalid_argument("Computer: [initializing] Exception was thrown by either the Processor or the memory constructor: "+std::string(e.what()));
+        }
     }
 
     ~Computer()
