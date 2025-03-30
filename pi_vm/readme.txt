@@ -2,10 +2,9 @@ This is an emulator for the PI architecture.
 
 There is a CMake file availible for compilation.
 
-
 Usage:
 
-There is a lot of exceptin throwing done in the application - if something doesn't work, READ the exception - I tried to make those messages rather helpful.
+There is a robust error handling system in the application - if something doesn't work, READ the error - I tried to make those messages rather helpful.
 
 In general, you need to provide a file with the program for the emulated machine. Those can come in 3 formats: binary, hex and decimal. Here is how you run the program:
 
