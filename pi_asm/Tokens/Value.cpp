@@ -11,7 +11,7 @@ unsigned int Value::match(std::vector<std::string> &tokens, unsigned int offset)
     }
     for(int i=0;i<tokens[offset].size();i++)
     {
-        if(!inAlphabet(tokens[offset][i]))
+        if(!inAlphabet(tokens[offset][i]) && tokens[offset][i]!=VALUE_DECLARATION[0])
         {
             return 0;
         }

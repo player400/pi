@@ -19,6 +19,7 @@
 #define KW_CARRY "CARRY"
 #define BOOLEAN_F "false"
 #define BOOLEAN_T "true"
+#define VALUE_DECLARATION ">"
 
 bool inAlphabet(char x);
 
