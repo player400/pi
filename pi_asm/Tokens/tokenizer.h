@@ -8,7 +8,7 @@
 #include <vector>
 #include <string>
 
-void tokenize(const std::vector<char>& stream, std::vector<std::string>& tokens);
+void tokenize(const std::vector<char>& stream, std::vector<std::string>& tokens, std::vector<int>&lines);
 
 
 void input(std::istream& source, std::vector<char>& stream);

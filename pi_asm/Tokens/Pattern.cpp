@@ -7,3 +7,11 @@
 bool Pattern::isToken() {
     return false;
 }
+
+const Pattern &Pattern::operator[](unsigned int position) {
+    return *(patterns[position]);
+}
+
+unsigned int Pattern::size() {
+    return patterns.size();
+}

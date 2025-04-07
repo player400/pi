@@ -28,4 +28,8 @@ add_executable(pi_asm main.cpp
         Tokens/Logic.h
         Tokens/tokenizer.h
         Tokens/tokenizer.cpp
+        Tokens/Variable.cpp
+        Tokens/Variable.h
+        Tokens/preprocessor.h
+        Tokens/preprocessor.cpp
 )

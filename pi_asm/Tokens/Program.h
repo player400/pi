@@ -9,8 +9,13 @@
 #include "Pattern.h"
 
 class Program : public Pattern{
+private:
+    std::string fileName;
+    std::vector<int>& lines;
 public:
     unsigned int match(std::vector<std::string> &tokens, unsigned int offset) override;
+
+    Program(std::string fileName, std::vector<int>& lines);
 };
 
 

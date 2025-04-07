@@ -48,7 +48,7 @@ bool isTokenContinuation(std::string current, char x)
     return false;
 }
 
-void tokenize(const std::vector<char>& stream, std::vector<std::string>& tokens)
+void tokenize(const std::vector<char>& stream, std::vector<std::string>& tokens, std::vector<int>&lines)
 {
     enum State
     {
@@ -60,6 +60,7 @@ void tokenize(const std::vector<char>& stream, std::vector<std::string>& tokens)
     std::string currentToken;
 
     State currentState = INITIAL;
+    int lineCounter = 1;
 
     for(int i=0;i<stream.size();i++)
     {
@@ -79,6 +80,10 @@ void tokenize(const std::vector<char>& stream, std::vector<std::string>& tokens)
                     currentState = OPERATOR;
                     currentToken.push_back(x);
                 }
+                else if(x == '\n')
+                {
+                    lineCounter++;
+                }
             } break;
             case OPERATOR:
             {
@@ -88,12 +93,18 @@ void tokenize(const std::vector<char>& stream, std::vector<std::string>& tokens)
                     currentToken.clear();
                     currentState = WORD;
                     currentToken.push_back(x);
+                    lines.push_back(lineCounter);
                 }
                 else if(isWhitespace(x))
                 {
                     tokens.push_back(currentToken);
+                    lines.push_back(lineCounter);
                     currentToken.clear();
                     currentState = INITIAL;
+                    if(x=='\n')
+                    {
+                        lineCounter++;
+                    }
                 }
                 else if(isTokenContinuation(currentToken, x))
                 {
@@ -102,6 +113,7 @@ void tokenize(const std::vector<char>& stream, std::vector<std::string>& tokens)
                 else
                 {
                     tokens.push_back(currentToken);
+                    lines.push_back(lineCounter);
                     currentToken.clear();
                     currentState = OPERATOR;
                     currentToken.push_back(x);
@@ -116,18 +128,25 @@ void tokenize(const std::vector<char>& stream, std::vector<std::string>& tokens)
                 else if(x == VALUE_DECLARATION[0])
                 {
                     tokens.push_back(currentToken);
+                    lines.push_back(lineCounter);
                     currentToken.clear();
                     currentToken.push_back(x);
                 }
                 else if(isWhitespace(x))
                 {
                     tokens.push_back(currentToken);
+                    lines.push_back(lineCounter);
                     currentToken.clear();
                     currentState = INITIAL;
+                    if(x=='\n')
+                    {
+                        lineCounter++;
+                    }
                 }
                 else
                 {
                     tokens.push_back(currentToken);
+                    lines.push_back(lineCounter);
                     currentToken.clear();
                     currentState = OPERATOR;
                     currentToken.push_back(x);

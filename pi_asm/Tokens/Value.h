@@ -11,6 +11,13 @@
 class Value : public Pattern {
 private:
     std::string value;
+    enum Type
+    {
+        DIRECT,
+        DECLARATION,
+        REFERENCE
+    };
+    Type type;
 public:
 
     unsigned int match(std::vector<std::string> &tokens, unsigned int offset) override;

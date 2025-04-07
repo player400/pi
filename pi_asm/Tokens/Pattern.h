@@ -18,6 +18,10 @@ public:
 
     virtual unsigned int match(std::vector<std::string> &tokens, unsigned int offset) = 0;
 
+    const Pattern& operator[](unsigned int position);
+
+    unsigned int size();
+
 };
 
 

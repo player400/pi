@@ -17,9 +17,11 @@
 #define OP_MUL "*"
 #define OP_NOT "~"
 #define KW_CARRY "CARRY"
+#define KW_TIMES "TIMES"
 #define BOOLEAN_F "false"
 #define BOOLEAN_T "true"
 #define VALUE_DECLARATION ">"
+#define KW_DEFINE "DEFINE"
 
 bool inAlphabet(char x);
 
