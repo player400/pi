@@ -9,16 +9,20 @@
 #include "Pattern.h"
 
 class Value : public Pattern {
-private:
-    std::string value;
+public:
     enum Type
     {
         DIRECT,
         DECLARATION,
         REFERENCE
     };
+private:
+    std::string value;
     Type type;
 public:
+    const std::string &getValue() const;
+
+    Type getType() const;
 
     unsigned int match(std::vector<std::string> &tokens, unsigned int offset) override;
 };

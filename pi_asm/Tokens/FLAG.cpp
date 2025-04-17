@@ -46,6 +46,7 @@ unsigned int FLAG::match(std::vector<std::string> &tokens, unsigned int offset) 
     }
     else
     {
+        patterns.push_back(flag);
         patterns.push_back(value);
     }
     if(offset+3 >= tokens.size() || tokens[offset+3+tokenMatch]!=SEMICOLON)

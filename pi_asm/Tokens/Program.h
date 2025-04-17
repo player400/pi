@@ -12,10 +12,13 @@ class Program : public Pattern{
 private:
     std::string fileName;
     std::vector<int>& lines;
+    std::vector<int> linesParsed;
 public:
     unsigned int match(std::vector<std::string> &tokens, unsigned int offset) override;
 
-    Program(std::string fileName, std::vector<int>& lines);
+    int getPatternLine(int pattern);
+
+    Program(std::string &fileName, std::vector<int>& lines);
 };
 
 

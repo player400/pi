@@ -2,7 +2,7 @@
 // Created by player402 on 30.03.25.
 //
 
-#ifndef PI_ASM_INSTRUCTION_H
+#ifndef PI_ASM_ASSEMBLYINSTRUCTION_H
 #define PI_ASM_INSTRUCTION_H
 
 
@@ -14,4 +14,4 @@ public:
 };
 
 
-#endif //PI_ASM_INSTRUCTION_H
+#endif //PI_ASM_ASSEMBLYINSTRUCTION_H

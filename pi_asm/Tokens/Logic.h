@@ -9,15 +9,24 @@
 #include "Pattern.h"
 
 class Logic : public Pattern{
+public:
     enum ValueType
     {
         ADDRESS,
         BOOLEAN,
         CARRY
     };
+private:
     ValueType type;
-    std::string value;
+    bool value;
+public:
+    ValueType getType() const;
+
+    const bool getValue() const;
+
     unsigned int match(std::vector<std::string> &tokens, unsigned int offset) override;
+
+
 };
 
 

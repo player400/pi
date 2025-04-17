@@ -138,3 +138,11 @@ unsigned int Expression::matchAddOns(std::vector<std::string> &tokens, unsigned 
 
     return sum;
 }
+
+bool Expression::isNegate() const {
+    return negate;
+}
+
+Expression::OperationType Expression::getType() const {
+    return type;
+}

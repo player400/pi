@@ -9,18 +9,24 @@
 #include "Pattern.h"
 
 class Expression : public Pattern{
-private:
-    bool negate;
+public:
     enum OperationType
     {
         ADD,
         MUL
     };
+private:
+    bool negate =  false;
+
     OperationType type;
 
     unsigned int matchAddOns(std::vector<std::string> &tokens, unsigned int offset);
 public:
     unsigned int match(std::vector<std::string> &tokens, unsigned int offset) override;
+
+    bool isNegate() const;
+
+    OperationType getType() const;
 };
 
 

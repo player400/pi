@@ -62,3 +62,11 @@ unsigned int Value::match(std::vector<std::string> &tokens, unsigned int offset)
     }
     return 1;
 }
+
+const std::string &Value::getValue() const {
+    return value;
+}
+
+Value::Type Value::getType() const {
+    return type;
+}

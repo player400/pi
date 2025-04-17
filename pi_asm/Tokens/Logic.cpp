@@ -14,13 +14,13 @@ unsigned int Logic::match(std::vector<std::string> &tokens, unsigned int offset)
     if(tokens[offset]==BOOLEAN_F)
     {
         type = BOOLEAN;
-        value = BOOLEAN_F;
+        value = false;
         return 1;
     }
     else if(tokens[offset]==BOOLEAN_T)
     {
         type = BOOLEAN;
-        value = BOOLEAN_T;
+        value = true;
         return 1;
     }
     else if(tokens[offset]==KW_CARRY)
@@ -53,4 +53,12 @@ unsigned int Logic::match(std::vector<std::string> &tokens, unsigned int offset)
             return valueMatch;
         }
     }
+}
+
+Logic::ValueType Logic::getType() const {
+    return type;
+}
+
+const bool Logic::getValue() const {
+    return value;
 }

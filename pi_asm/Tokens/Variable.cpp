@@ -57,11 +57,13 @@ unsigned int Variable::match(std::vector<std::string> &tokens, unsigned int offs
             catch(std::exception& e)
             {
                 delete timesValue;
+                times = nullptr;
                 throw std::invalid_argument("[Parsing variable declaration] Syntax error after the TIMES keyword, expected a value: "+std::string(e.what()));
             }
             if(timesValueMatch == 0)
             {
                 delete timesValue;
+                times = nullptr;
                 throw std::invalid_argument("[Parsing variable declaration] Syntax error after the TIMES keyword, expected a value.");
             }
             times = timesValue;
@@ -69,6 +71,7 @@ unsigned int Variable::match(std::vector<std::string> &tokens, unsigned int offs
             if(tokens[offset+length] != SEMICOLON)
             {
                 delete timesValue;
+                times = nullptr;
                 throw std::invalid_argument("[Parsing variable declaration] Syntax error: Expected a semicolon at the end of the line.");
             }
             return length+1;
@@ -94,4 +97,8 @@ Variable::~Variable() {
         delete patterns[i];
     }
     delete times;
+}
+
+Value *Variable::getTimes() const {
+    return times;
 }

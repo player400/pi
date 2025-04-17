@@ -32,4 +32,20 @@ add_executable(pi_asm main.cpp
         Tokens/Variable.h
         Tokens/preprocessor.h
         Tokens/preprocessor.cpp
+        Assembly/Entity.cpp
+        Assembly/Entity.h
+        Assembly/Assembly.cpp
+        Assembly/Assembly.h
+        Assembly/AssemblyInstruction.cpp
+        Assembly/AssemblyInstruction.h
+        Assembly/InstructionMOV.cpp
+        Assembly/InstructionMOV.h
+        Assembly/InstructionFLAG.cpp
+        Assembly/InstructionFLAG.h
+        Assembly/Data.cpp
+        Assembly/Data.h
+        Assembly/Writer/Writer.cpp
+        Assembly/Writer/Writer.h
+        Assembly/Writer/BinaryWriter.cpp
+        Assembly/Writer/BinaryWriter.h
 )

@@ -8,7 +8,7 @@ bool Pattern::isToken() {
     return false;
 }
 
-const Pattern &Pattern::operator[](unsigned int position) {
+Pattern &Pattern::operator[](unsigned int position) {
     return *(patterns[position]);
 }
 

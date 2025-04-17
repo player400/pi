@@ -14,6 +14,8 @@ Value* times= nullptr;
 public:
     unsigned int match(std::vector<std::string> &tokens, unsigned int offset) override;
 
+    Value *getTimes() const;
+
     ~Variable();
 };
 

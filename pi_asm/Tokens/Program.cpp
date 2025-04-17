@@ -53,6 +53,7 @@ unsigned int Program::match(std::vector<std::string> &tokens, unsigned int offse
             delete instruction;
             delete variable;
             patterns.push_back(hook);
+            linesParsed.push_back(lines[i]);
         }
         else if(maxMatch == instructionMatch)
         {
@@ -60,6 +61,7 @@ unsigned int Program::match(std::vector<std::string> &tokens, unsigned int offse
             delete hook;
             delete variable;
             patterns.push_back(instruction);
+            linesParsed.push_back(lines[i]);
         }
         else if(maxMatch == variableMatch)
         {
@@ -67,6 +69,7 @@ unsigned int Program::match(std::vector<std::string> &tokens, unsigned int offse
             delete comment;
             delete instruction;
             patterns.push_back(variable);
+            linesParsed.push_back(lines[i]);
         }
         else if(maxMatch == commentMatch)
         {
@@ -82,6 +85,11 @@ unsigned int Program::match(std::vector<std::string> &tokens, unsigned int offse
     return sum;
 }
 
-Program::Program(std::string fileName, std::vector<int> &lines):lines(lines) {
+Program::Program(std::string &fileName, std::vector<int> &lines): lines(lines) {
     this->fileName = fileName;
 }
+
+int Program::getPatternLine(int pattern) {
+    return linesParsed[pattern];
+}
+
