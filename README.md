@@ -46,13 +46,22 @@ Supporting:\
     -8 bit version\
 <br/>
 <br/>
+
+
+Assembler
+_______________________________________________________________________
+There is an assembler for the PI architecture. That is a program that takes assembly code and interprets it into machine code.\
+Supporting:\
+    -4 bit version\
+    -8 bit version\
+<br/>
+<br/>
     
 
 ## Further plans
 
 Short term<br/>
 _______________________________________________________________________<br/>
-    -IN PROGRESS: an assembler (ie. a program turning assembly into machine code)<br/>
     -developing an 8-bit PI computer on an FPGA<br/>
 
 
