@@ -12,6 +12,7 @@
 #include "InstructionFLAG.h"
 #include "Data.h"
 #include <fstream>
+#include <cstring>
 
 Assembly::Assembly(Entity::Architecture architecture, Writer &writer):architecture(architecture),writer(writer) {
     if(architecture == Entity::BIT8)
@@ -42,6 +43,10 @@ void Assembly::generateByteCode(Program &program) {
 
 void Assembly::writeToFile(std::string& fileName) {
     std::ofstream outputFile(fileName);
+    if(outputFile.fail())
+    {
+        throw std::invalid_argument("Error while opening output file: "+std::string(strerror(errno)));
+    }
     outputFile.clear();
     writer.writeAll(outputFile);
     outputFile.close();
@@ -275,7 +280,7 @@ int Assembly::getTrueValue(Value *value) {
     auto type = value->getType();
     if(type == Value::DECLARATION)
     {
-        return 0;
+        return maxAddress;
     }
     else if(type == Value::DIRECT)
     {

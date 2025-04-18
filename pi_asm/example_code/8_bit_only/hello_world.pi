@@ -1,0 +1,20 @@
+16;
+1;
+text;
+text;
+0 TIMES 12;
+
+
+ptl:
+MOV ptr, 3;
+MOV 5, 3;
+MOV 3, >ptr;
+FLAG 0, true;
+MOV 2, 5;
+MOV 0, ptl_jump;
+
+ptl_jump: ptl;
+
+
+
+text: 72, 101, 108, 108, 111, 44, 20, 119, 111, 114, 108, 100, 33;

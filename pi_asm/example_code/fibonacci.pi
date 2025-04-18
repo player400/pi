@@ -1,0 +1,11 @@
+4, 0, 1, 1;
+ptl:
+FLAG 0, true;
+MOV temp, 3;
+MOV 1, 2;
+MOV 2, temp;
+MOV 0, jump;
+jump:
+ptl;
+temp:
+0;

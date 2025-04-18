@@ -48,4 +48,9 @@ add_executable(pi_asm main.cpp
         Assembly/Writer/Writer.h
         Assembly/Writer/BinaryWriter.cpp
         Assembly/Writer/BinaryWriter.h
+        ProgramArgumentProcessing.h
+        Assembly/Writer/DecimalWriter.cpp
+        Assembly/Writer/DecimalWriter.h
+        Assembly/Writer/HexadecimalWriter.cpp
+        Assembly/Writer/HexadecimalWriter.h
 )
