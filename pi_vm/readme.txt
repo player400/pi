@@ -2,19 +2,30 @@ This is an emulator for the PI architecture.
 
 There is a CMake file availible for compilation.
 
+
 Usage:
 
 There is a robust error handling system in the application - if something doesn't work, READ the error - I tried to make those messages rather helpful.
 
 In general, you need to provide a file with the program for the emulated machine. Those can come in 3 formats: binary, hex and decimal. Here is how you run the program:
 
+
 Command line arguments:
 
-pi_vm <-h|-b|-d> <file name> [-a] [architecture (4 bit, 8 bit etc) - 8 bit is default]
+pi_vm <-h|-b|-d> <file name> [-a] [architecture (4 bit, 8 bit etc) - 8 bit is default] [-debug|-p]
 
-Hex file - 8 bit:	'pi_vm -h code.hex'
-Binary file - 8 bit:	'pi_vm -b code.bin -a 8'
-Decimal file - 4 bit:	'pi vm -d code.dec -a 4' 
+Hex file - 8 bit:			'pi_vm -h code.hex'
+Binary file - 8 bit, debug mode:	'pi_vm -b code.bin -a 8 -debug'
+Decimal file - 4 bit:			'pi vm -d code.dec -a 4' 
+
+
+Additional options: You can also use either option -debug or option -p.
+
+'-debug' starts the emulator in debug mode
+
+'-p' Optimizes the emulator output for writing into a text file (as opposed to providing an interactive CLI) - it turns off console clearing and text prompts.
+
+Those options can't be used together.
 
 
 Navigation:

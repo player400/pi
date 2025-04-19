@@ -11,6 +11,8 @@
 #include "../utils.h"
 #include "architecture/ComputerArchitecture.h"
 
+#define FLAG_COUNT 4
+
 //This class is an abstraction of computer CPU - template should be uint8, uint16, uint32 etc - depending on how many bit system you want to have
 template<typename T>
 class Processor {
@@ -35,7 +37,7 @@ private:
 
     bool lastOperationCarry = false;
 
-    bool flags[4];
+    bool flags[FLAG_COUNT];
 
     void triggerAccumulator()
     {
@@ -76,6 +78,16 @@ private:
 
 
 public:
+    bool getFlag(int flagNumber) const
+    {
+        if(flagNumber < 0 || flagNumber>=FLAG_COUNT)
+        {
+            throw std::invalid_argument("Processor: [flag read] Flag number given: "+std::to_string(flagNumber)
+                                        +". Should be larger or equal 0 and below "+std::to_string(FLAG_COUNT));
+        }
+        return flags[flagNumber];
+    }
+
     T getRegister(T registryNumber) const
     {
         if(registryNumber<0 || registryNumber>=architecture.getRegistryCount())

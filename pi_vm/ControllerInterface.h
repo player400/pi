@@ -14,22 +14,30 @@ private:
     Computer& microcontroller;
 
 public:
-    void run()
+    void run(bool debug = false, bool printOutput = false)
     {
         while(true) {
-            system("clear");
-            try
+            if(!printOutput && !debug)
             {
-                std::cout << "Output: " << microcontroller.output() << std::endl;
-            }
-            catch(std::exception& e)
-            {
-                throw std::invalid_argument("ControllerInterface: [printing output] Exception was thrown, while printing microcontroller output: "+std::string(e.what()));
+                try
+                {
+                    system("clear");
+                    std::cout << "Output: " << std::dec<<microcontroller.output();
+                    std::cout<<" 0x"<<std::hex<< microcontroller.output();
+                    std::cout<<" " <<(char)microcontroller.output()<<std::endl;
+                }
+                catch(std::exception& e)
+                {
+                    throw std::invalid_argument("ControllerInterface: [printing output] Exception was thrown, while printing microcontroller output: "+std::string(e.what()));
+                }
             }
             if(microcontroller.isStopped())
             {
                 std::string input;
-                system("clear");
+                if(!printOutput && !debug)
+                {
+                    system("clear");
+                }
                 while(true)
                 {
                     try
@@ -42,25 +50,38 @@ public:
                     {
                         throw std::invalid_argument("ControllerInterface: [printing output] Exception was thrown, while printing microcontroller output: "+std::string(e.what()));
                     }
-                    std::cout<<"Code execution STOPPED by an internal command. Enter a number and press enter to provide input. Type 'r' to resume execution."<<std::endl;
+                    if(!printOutput)
+                    {
+                        std::cout<<"Code execution STOPPED by an internal command. Enter a number and press enter to provide input. Type 'r' to resume execution. Type 'e' to stop the emulator."<<std::endl;
+                    }
                     std::cin>>input;
-                    if(input!="r")
+                    if(input!="r" && input != "e")
                     {
                         try
                         {
                             microcontroller.input(stoi(input));
-                            system("clear");
+                            if(!printOutput && !debug)
+                            {
+                                system("clear");
+                            }
                         }
                         catch (std::exception& e)
                         {
-                            throw std::invalid_argument("ControllerInterface: [taking input] The Computer threw an exception, while taking input: "+std::string(e.what()));
+                            throw std::invalid_argument("ControllerInterface: [taking input] The Computer threw an exception, while taking input (input must be a number): "+std::string(e.what()));
                         }
                     }
-                    else
+                    else if(input == "r")
                     {
                         microcontroller.resume();
-                        system("clear");
+                        if(!printOutput && !debug)
+                        {
+                            system("clear");
+                        }
                         break;
+                    }
+                    else if(input == "e")
+                    {
+                        exit(1);
                     }
                 }
             }

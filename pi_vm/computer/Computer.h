@@ -29,6 +29,41 @@ public:
         return architecture.getWordWidth();
     }
 
+    int getRegister(int registryNumber) const
+    {
+        try
+        {
+            return (int)cpu->getRegister(registryNumber);
+        }
+        catch(std::exception& e)
+        {
+            throw std::invalid_argument("Computer: [reading register] Exception was thrown by the processor, while attempting to read the value of register "+std::to_string(registryNumber)+": "+std::string(e.what()));
+        }
+    }
+
+    uint8_t getMemory(int address) const
+    {
+        try
+        {
+            return ram->load(address-architecture.getRegistryCount());
+        }
+        catch(std::exception& e)
+        {
+            throw std::invalid_argument("Computer: [reading memory] Exception was thrown by the memory, while attempting to read the value at address "+std::to_string(address)+": "+std::string(e.what()));
+        }
+    }
+
+    bool getFlag(int flagNumber) const
+    {
+        try
+        {
+            return cpu->getFlag(flagNumber);
+        }
+        catch(std::exception& e)
+        {
+            throw std::invalid_argument("Computer: [reading flag] Exception was thrown by the processor, while attempting to read the value of flag "+std::to_string(flagNumber)+": "+std::string(e.what()));
+        }
+    }
     void cycle()
     {
         try

@@ -17,6 +17,8 @@ enum Options
     BINARY_FILE,
     ARCHITECTURE,
     UNRECOGNIZED,
+    DEBUG,
+    PRINT_OUTPUT,
 };
 
 struct OptionType
@@ -39,6 +41,8 @@ const OptionType optionTypes[] = {
         {DECIMAL_FILE, "d", 1},
         {BINARY_FILE, "b", 1},
         {ARCHITECTURE, "a", 1},
+        {DEBUG, "debug", 0},
+        {PRINT_OUTPUT, "p", 0},
         {UNRECOGNIZED, "[unrecognized option]", 0}
 };
 
@@ -88,12 +92,14 @@ void parseProgramArguments(int argc, char* argv[], std::vector<ParsedOption>& op
 }
 
 
-void applyProgramArguments(ExecutableFileType& fileType, std::string& fileName, int& architecture, int argc, char* argv[])
+void applyProgramArguments(ExecutableFileType& fileType, std::string& fileName, int& architecture, bool& debug, bool& printOutput, int argc, char* argv[])
 {
     fileType = NONE;
     std::vector<ParsedOption>options;
     parseProgramArguments(argc,argv, options);
     architecture = 8;
+    debug = false;
+    printOutput = false;
     for(auto & option : options)
     {
         if(option.type==BINARY_FILE)
@@ -126,6 +132,22 @@ void applyProgramArguments(ExecutableFileType& fileType, std::string& fileName, 
         if(option.type == ARCHITECTURE)
         {
             architecture = stoi(option.arguments[0]);
+        }
+        if(option.type == DEBUG)
+        {
+            if(printOutput)
+            {
+                throw std::invalid_argument("General: [applying options] Options -debug and -p cannot be both used.");
+            }
+            debug = true;
+        }
+        if(option.type == PRINT_OUTPUT)
+        {
+            if(debug)
+            {
+                throw std::invalid_argument("General: [applying options] Options -debug and -p cannot be both used.");
+            }
+            printOutput = true;
         }
     }
 }
