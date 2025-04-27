@@ -12,20 +12,24 @@ In general, you need to provide a file with the program for the emulated machine
 
 Command line arguments:
 
-pi_vm <-h|-b|-d> <file name> [-a] [architecture (4 bit, 8 bit etc) - 8 bit is default] [-debug|-p]
+pi_vm <-h|-b|-d> <file name> [-a] [architecture (4 bit, 8 bit etc) - 8 bit is default] [-debug|-p] [-c]
 
-Hex file - 8 bit:			'pi_vm -h code.hex'
+Hex file - 8 bit:			'pi_vm -h code.hex -p -c'
 Binary file - 8 bit, debug mode:	'pi_vm -b code.bin -a 8 -debug'
-Decimal file - 4 bit:			'pi vm -d code.dec -a 4' 
+Decimal file - 4 bit:			'pi vm -d code.dec -a 4 -c' 
 
 
-Additional options: You can also use either option -debug or option -p.
+Additional options:
 
 '-debug' starts the emulator in debug mode
 
 '-p' Optimizes the emulator output for writing into a text file (as opposed to providing an interactive CLI) - it turns off console clearing and text prompts.
 
-Those options can't be used together.
+Those two options (debug and p) can't be used together!
+
+'-c' Displays number of CPU clock cycles executed since the emulator was started.
+
+
 
 
 Navigation:
