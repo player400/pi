@@ -12,11 +12,11 @@
 class ComputerArchitecture {
 public:
 
-    virtual int getRegistryCount() = 0;
+    virtual unsigned int getRegistryCount() = 0;
 
-    virtual int getWordWidth() = 0;
+    virtual unsigned int getWordWidth() = 0;
 
-    virtual int getMemoryAddressWidth() = 0;
+    virtual unsigned int getMemoryAddressWidth() = 0;
 
 
     //Below methods take the entire instruction code and return/check specific argument (classes inheriting from this class are supposed to know which bits to look at)
@@ -25,11 +25,11 @@ public:
 
     virtual bool isMoveDirectionReversed(uint64_t instruction) = 0;
 
-    virtual int getMovDestination(uint64_t instruction) = 0;
+    virtual unsigned int getMovDestination(uint64_t instruction) = 0;
 
-    virtual int getMovSource(uint64_t instruction) = 0;
+    virtual unsigned int getMovSource(uint64_t instruction) = 0;
 
-    virtual int getFlagFlagNumber(uint64_t instruction) = 0;
+    virtual unsigned int getFlagFlagNumber(uint64_t instruction) = 0;
 
     virtual bool getFlagValue(uint64_t instruction) = 0;
 
@@ -39,9 +39,9 @@ public:
 
     virtual bool isFlagRegisterIncluded(uint64_t instruction) = 0;
 
-    virtual int getFlagSourceRegisterNumber(uint64_t instruction) = 0;
+    virtual unsigned int getFlagSourceRegisterNumber(uint64_t instruction) = 0;
 
-    virtual int getMemoryCellWidth()
+    virtual unsigned int getMemoryCellWidth()
     {
         return 8;
     }

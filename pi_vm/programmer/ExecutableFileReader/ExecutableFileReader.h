@@ -10,8 +10,8 @@
 
 class ExecutableFileReader {
 protected:
-    int currentByte=0;
-    int architectureBitWidth;
+    unsigned int currentByte=0;
+    unsigned int architectureBitWidth;
     std::vector<uint8_t>bytes;
 
 public:
@@ -45,6 +45,7 @@ public:
         return bytes.size();
     }
 
+    virtual ~ExecutableFileReader(){}
 };
 
 

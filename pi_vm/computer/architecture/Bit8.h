@@ -13,13 +13,13 @@
 class Bit8 : public ComputerArchitecture {
 
 private:
-    const int wordWidth = 8;
-    const int registryAddressSpaceByteCount = 4;
+    const unsigned int wordWidth = 8;
+    const unsigned int registryAddressSpaceByteCount = 4;
 
-    int registryCount;
+    unsigned int registryCount;
 
-    const int opCodeBitmask = 0b1000000000000000;
-    const int opCodeShift = 15;
+    const unsigned int opCodeBitmask = 0b1000000000000000;
+    const unsigned int opCodeShift = 15;
 
 
     //CONSTANT VARIABLES BELOW
@@ -29,55 +29,55 @@ private:
 
     //MOV OPERATION INSTRUCTION CODE SPECIFICS:
 
-    const int movOpCode = 0;
+    const unsigned int movOpCode = 0;
 
-    const int movReverseBitmask = 0b100000000000000;    //& WITH THIS
-    const int movReverseShift = 14;  //THEN BITSHIFT LEFT THIS
+    const unsigned int movReverseBitmask = 0b100000000000000;    //& WITH THIS
+    const unsigned int movReverseShift = 14;  //THEN BITSHIFT LEFT THIS
 
-    const int movDestinationBitmask = 0b11110000000000;
-    const int movDestinationShift = 10;
+    const unsigned int movDestinationBitmask = 0b11110000000000;
+    const unsigned int movDestinationShift = 10;
 
-    const int movSourceBitmask = 0b1111111111;
-    const int movSourceShift = 0;
+    const unsigned int movSourceBitmask = 0b1111111111;
+    const unsigned int movSourceShift = 0;
 
 
     //FLAG OPERATION INSTRUCTION CODE SPECIFICS
 
-    const int flagFlagNumberBitmask = 0b0110000000000000;
-    const int flagFlagNumberShift = 13;
+    const unsigned int flagFlagNumberBitmask = 0b0110000000000000;
+    const unsigned int flagFlagNumberShift = 13;
 
-    const int flagValueBitmask = 0b1000000000000;
-    const int flagValueShift = 12;
+    const unsigned int flagValueBitmask = 0b1000000000000;
+    const unsigned int flagValueShift = 12;
 
-    const int flagCarryBitmask = 0b100000000000;
-    const int flagCarryShift = 11;
+    const unsigned int flagCarryBitmask = 0b100000000000;
+    const unsigned int flagCarryShift = 11;
 
-    const int flagMemoryBitmask = 0b10000000000;
-    const int flagMemoryShift = 10;
+    const unsigned int flagMemoryBitmask = 0b10000000000;
+    const unsigned int flagMemoryShift = 10;
 
-    const int flagNegationBitmask = 0b100000000;
-    const int flagNegationShift = 8;
+    const unsigned int flagNegationBitmask = 0b100000000;
+    const unsigned int flagNegationShift = 8;
 
-    const int flagLogicalOperationBitmask = 0b1000000000;
-    const int flagLogicalOperationShift = 9;
+    const unsigned int flagLogicalOperationBitmask = 0b1000000000;
+    const unsigned int flagLogicalOperationShift = 9;
 
-    const int flagMultiplyLogicalOperationCode = 1;
+    const unsigned int flagMultiplyLogicalOperationCode = 1;
 
-    const int flagAddressBitmask = 0b11111111;
-    const int flagAddressShift = 0;
+    const unsigned int flagAddressBitmask = 0b11111111;
+    const unsigned int flagAddressShift = 0;
 
 public:
-    int getRegistryCount() override
+    unsigned int getRegistryCount() override
     {
         return registryCount;
     }
 
-    int getWordWidth() override
+    int unsigned getWordWidth() override
     {
         return wordWidth;
     }
 
-    int getMemoryAddressWidth() override
+    int unsigned getMemoryAddressWidth() override
     {
         return 10;
     }
@@ -96,17 +96,17 @@ public:
         return ((movReverseBitmask & instruction)>>movReverseShift);
     }
 
-    int getMovDestination(uint64_t instruction) override
+    int unsigned getMovDestination(uint64_t instruction) override
     {
         return (int)((movDestinationBitmask & instruction)>>movDestinationShift);
     }
 
-    int getMovSource(uint64_t instruction) override
+    int unsigned getMovSource(uint64_t instruction) override
     {
         return (int)((movSourceBitmask & instruction)>>movSourceShift);
     }
 
-    int getFlagFlagNumber(uint64_t instruction) override
+    int unsigned getFlagFlagNumber(uint64_t instruction) override
     {
         return (int)((flagFlagNumberBitmask & instruction)>>flagFlagNumberShift);
     }
@@ -131,12 +131,12 @@ public:
         return (bool)((flagMemoryBitmask & instruction) >> flagMemoryShift);
     }
 
-    int getFlagSourceRegisterNumber(uint64_t instruction) override
+    int unsigned getFlagSourceRegisterNumber(uint64_t instruction) override
     {
         return (int)((flagAddressBitmask & instruction) >> flagAddressShift);
     }
 
-    int getMemoryCellWidth() override
+    int unsigned getMemoryCellWidth() override
     {
         return 8;
     }

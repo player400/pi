@@ -1,11 +1,15 @@
 
+#include <thread>
+#include <unordered_map>
+#include <iostream>
+#include <fstream>
+#include <thread>
+
 #include "computer/Computer.h"
 #include "ControllerInterface.h"
 #include "ProgramArgumentProcessing.h"
 #include "programmer/Programmer.h"
 #include "computer/architecture/Bit8.h"
-#include <thread>
-#include <unordered_map>
 
 
 ComputerArchitecture* getArchitecture(int architecture)

@@ -102,7 +102,7 @@ public:
     {
         uint64_t bitmask = 0;
         uint64_t bitmaskConstructor=1;
-        for(int i=0;i<architecture.getWordWidth();i++)
+        for(unsigned int i=0;i<architecture.getWordWidth();i++)
         {
             bitmask = bitmask | bitmaskConstructor;
             bitmaskConstructor = bitmaskConstructor<<1;
@@ -124,7 +124,7 @@ public:
     }
 
 private:
-    void mov(int destination, int source, bool reverse)
+    void mov(unsigned int destination, unsigned int source, bool reverse)
     {
         if(destination>=architecture.getRegistryCount())
         {
@@ -162,7 +162,7 @@ private:
         }
     }
 
-    void flag(int flagNumber, bool value, bool negate, bool includeMemory, bool includeCarry, int sourceMemoryAddress, LogicalOperation operation)
+    void flag(unsigned int flagNumber, bool value, bool negate, bool includeMemory, bool includeCarry, unsigned int sourceMemoryAddress, LogicalOperation operation)
     {
         if(includeMemory)
         {
@@ -255,7 +255,7 @@ public:
                     try {
                         instructionRegistry = memory.load(
                                 getRegister(PROGRAM_COUNTER) - architecture.getRegistryCount());
-                        for (int i = 1;
+                        for (unsigned int i = 1;
                              i < 2 * (architecture.getWordWidth() / architecture.getMemoryCellWidth()); i++) {
                             instructionRegistry = instructionRegistry << architecture.getWordWidth();
                             instructionRegistry += memory.load(
@@ -316,7 +316,7 @@ public:
         inProgrammingMode = false;
     }
 
-    Processor(ComputerArchitecture& architecture, Memory& memory):memory(memory),architecture(architecture)
+    Processor(ComputerArchitecture& architecture, Memory& memory):architecture(architecture), memory(memory)
     {
         registers = (T*)malloc(architecture.getRegistryCount()*sizeof(T));
         reset();

@@ -11,13 +11,13 @@
 
 class Bit4 : public ComputerArchitecture{
 private:
-    const int wordWidth = 4;
-    const int registryAddressSpaceByteCount = 2;
+    const unsigned int wordWidth = 4;
+    const unsigned int registryAddressSpaceByteCount = 2;
 
-    int registryCount;
+    unsigned int registryCount;
 
-    const int opCodeBitmask = 0b10000000;
-    const int opCodeShift = 7;
+    const unsigned int opCodeBitmask = 0b10000000;
+    const unsigned int opCodeShift = 7;
 
 
     //CONSTANT VARIABLES BELOW
@@ -27,56 +27,56 @@ private:
 
     //MOV OPERATION INSTRUCTION CODE SPECIFICS:
 
-    const int movOpCode = 0;
+    const unsigned int movOpCode = 0;
 
-    const int movReverseBitmask = 0b1000000;    //& WITH THIS
-    const int movReverseShift = 6;  //THEN BITSHIFT LEFT THIS
+    const unsigned int movReverseBitmask = 0b1000000;    //& WITH THIS
+    const unsigned int movReverseShift = 6;  //THEN BITSHIFT LEFT THIS
 
-    const int movDestinationBitmask = 0b110000;
-    const int movDestinationShift = 4;
+    const unsigned int movDestinationBitmask = 0b110000;
+    const unsigned int movDestinationShift = 4;
 
-    const int movSourceBitmask = 0b1111;
-    const int movSourceShift = 0;
+    const unsigned int movSourceBitmask = 0b1111;
+    const unsigned int movSourceShift = 0;
 
 
     //FLAG OPERATION INSTRUCTION CODE SPECIFICS
 
-    const int defaultFlagSourceRegistry = 3;    //In 4-bit PI assembly there is no argument in the FLAG instruction to specify source register - it's always the accumulator
+    const unsigned int defaultFlagSourceRegistry = 3;    //In 4-bit PI assembly there is no argument in the FLAG instruction to specify source register - it's always the accumulator
 
-    const int flagFlagNumberBitmask = 0b01100000;
-    const int flagFlagNumberShift = 5;
+    const unsigned int flagFlagNumberBitmask = 0b01100000;
+    const unsigned int flagFlagNumberShift = 5;
 
-    const int flagValueBitmask = 0b10000;
-    const int flagValueShift = 4;
+    const unsigned int flagValueBitmask = 0b10000;
+    const unsigned int flagValueShift = 4;
 
-    const int flagCarryBitmask = 0b1000;
-    const int flagCarryShift = 3;
+    const unsigned int flagCarryBitmask = 0b1000;
+    const unsigned int flagCarryShift = 3;
 
-    const int flagAccumulatorBitmask = 0b100;
-    const int flagAccumulatorShift = 2;
+    const unsigned int flagAccumulatorBitmask = 0b100;
+    const unsigned int flagAccumulatorShift = 2;
 
-    const int flagNegationBitmask = 0b10;
-    const int flagNegationShift = 1;
+    const unsigned int flagNegationBitmask = 0b10;
+    const unsigned int flagNegationShift = 1;
 
-    const int flagLogicalOperationBitmask = 0b1;
-    const int flagLogicalOperationShift = 0;
+    const unsigned int flagLogicalOperationBitmask = 0b1;
+    const unsigned int flagLogicalOperationShift = 0;
 
-    const int flagMultiplyLogicalOperationCode = 1;
+    const unsigned int flagMultiplyLogicalOperationCode = 1;
 
 
 
 public:
-    int getRegistryCount() override
+    unsigned int getRegistryCount() override
     {
         return registryCount;
     }
 
-    int getWordWidth() override
+    int unsigned getWordWidth() override
     {
         return wordWidth;
     }
 
-    int getMemoryAddressWidth() override
+    int unsigned getMemoryAddressWidth() override
     {
         return getWordWidth();
     }
@@ -95,17 +95,17 @@ public:
         return ((movReverseBitmask & instruction)>>movReverseShift);
     }
 
-    int getMovDestination(uint64_t instruction) override
+    int unsigned getMovDestination(uint64_t instruction) override
     {
         return (int)((movDestinationBitmask & instruction)>>movDestinationShift);
     }
 
-    int getMovSource(uint64_t instruction) override
+    int unsigned getMovSource(uint64_t instruction) override
     {
         return (int)((movSourceBitmask & instruction)>>movSourceShift);
     }
 
-    int getFlagFlagNumber(uint64_t instruction) override
+    int unsigned getFlagFlagNumber(uint64_t instruction) override
     {
         return (int)((flagFlagNumberBitmask & instruction)>>flagFlagNumberShift);
     }
@@ -130,12 +130,12 @@ public:
         return (bool)((flagAccumulatorBitmask & instruction)>>flagAccumulatorShift);
     }
 
-    int getFlagSourceRegisterNumber(uint64_t instruction) override
+    int unsigned getFlagSourceRegisterNumber(uint64_t) override
     {
         return defaultFlagSourceRegistry;
     }
 
-    int getMemoryCellWidth() override
+    int unsigned getMemoryCellWidth() override
     {
         return 4;
     }
