@@ -14,9 +14,10 @@ class ControllerInterface {
 private:
     Computer& microcontroller;
 
-    void displayOutput(bool printOutput)
+    void displayOutput(bool printOutput, bool cycles)
     {
-        if(!printOutput) {
+        if(!printOutput)
+        {
             std::cout << "Output: \t";
         }
         try
@@ -25,21 +26,25 @@ private:
             std::cout <<" 0x"<<std::hex<< microcontroller.output() << "\t";
             if((char)microcontroller.output() == '\n')
             {
-                std::cout <<"'\\n'"<<std::endl;
+                std::cout <<"'\\n'";
             }
             else if((char)microcontroller.output() == '\b')
             {
-                std::cout <<"'\\b'"<<std::endl;
+                std::cout <<"'\\b'";
             }
             else if((char)microcontroller.output() == '\r')
             {
-                std::cout <<"'\\r'"<<std::endl;
+                std::cout <<"'\\r'";
             }
             else
             {
-                std::cout <<"'" <<(char)microcontroller.output()<<"'"<<std::endl;
+                std::cout <<"'" <<(char)microcontroller.output()<<"'";
             }
-
+            if(cycles)
+            {
+                std::cout << " \t | \t Instruction "<<std::dec<<microcontroller.getCycleCount()<<std::endl;
+            }
+            std::cout<<std::endl;
         }
         catch(std::exception& e)
         {
@@ -48,14 +53,14 @@ private:
     }
 
 public:
-    void run(bool debug = false, bool printOutput = false)
+    void run(bool debug = false, bool printOutput = false, bool cycles = false)
     {
         while(true) {
             std::cout.flush();
             if(!printOutput && !debug)
             {
                 system("clear");
-                displayOutput(printOutput);
+                displayOutput(printOutput, cycles);
             }
             if(microcontroller.isStopped())
             {
@@ -70,7 +75,7 @@ public:
                 {
                     if(!printOutput || !inputTaken)
                     {
-                        displayOutput(printOutput);
+                        displayOutput(printOutput, cycles);
                     }
                     if(!printOutput)
                     {

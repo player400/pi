@@ -26,14 +26,14 @@ public:
             throw std::invalid_argument("Programmer: [file reading] Exception was thrown while reading the program file: "+ std::string(e.what()));
         }
         unit.programmingMode();
-        int architectureWidth = reader->getArchitectureBitWidth();
+        unsigned int architectureWidth = reader->getArchitectureBitWidth();
         if(architectureWidth != unit.getArchitectureWidth())
         {
             throw std::invalid_argument("Programmer: [programming] You are trying to program a "+std::to_string(unit.getArchitectureWidth())+" bit machine with an executable for a "
             +std::to_string(architectureWidth)+" bit machine... Stop. Get some help. This is NOT supported.");
         }
         int bytesPerRegister = (architectureWidth-1)/BYTE_SIZE+1;
-        for(int i=0;i<unit.getRegistryCount();i++)
+        for(unsigned int i=0;i<unit.getRegistryCount();i++)
         {
             uint64_t currentRegister = 0;
             for(int j=bytesPerRegister-1;j>=0;j--)

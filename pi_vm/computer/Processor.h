@@ -233,11 +233,11 @@ private:
     }
 
 public:
-    void cycle()
+    bool cycle()
     {
         if(!inProgrammingMode) {
             if (flags[HALT_FLAG]) {
-                return;
+                return false;
             }
             try {
                 if (registers[PROGRAM_COUNTER] < architecture.getRegistryCount()) {
@@ -286,7 +286,9 @@ public:
                         std::string(e.what()));
             }
             decodeAndExecute();
+            return true;
         }
+        return false;
     }
 
     void reset() {

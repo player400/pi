@@ -19,6 +19,7 @@ enum Options
     UNRECOGNIZED,
     DEBUG,
     PRINT_OUTPUT,
+    SHOW_CYCLES
 };
 
 struct OptionType
@@ -43,6 +44,7 @@ const OptionType optionTypes[] = {
         {ARCHITECTURE, "a", 1},
         {DEBUG, "debug", 0},
         {PRINT_OUTPUT, "p", 0},
+        {SHOW_CYCLES, "c", 0},
         {UNRECOGNIZED, "[unrecognized option]", 0}
 };
 
@@ -92,7 +94,7 @@ void parseProgramArguments(int argc, char* argv[], std::vector<ParsedOption>& op
 }
 
 
-void applyProgramArguments(ExecutableFileType& fileType, std::string& fileName, int& architecture, bool& debug, bool& printOutput, int argc, char* argv[])
+void applyProgramArguments(ExecutableFileType& fileType, std::string& fileName, int& architecture, bool& debug, bool& printOutput, bool& cycles, int argc, char* argv[])
 {
     fileType = NONE;
     std::vector<ParsedOption>options;
@@ -100,6 +102,7 @@ void applyProgramArguments(ExecutableFileType& fileType, std::string& fileName, 
     architecture = 8;
     debug = false;
     printOutput = false;
+    cycles = false;
     for(auto & option : options)
     {
         if(option.type==BINARY_FILE)
@@ -148,6 +151,10 @@ void applyProgramArguments(ExecutableFileType& fileType, std::string& fileName, 
                 throw std::invalid_argument("General: [applying options] Options -debug and -p cannot be both used.");
             }
             printOutput = true;
+        }
+        if(option.type == SHOW_CYCLES)
+        {
+            cycles = true;
         }
     }
 }

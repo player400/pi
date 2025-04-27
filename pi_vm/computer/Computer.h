@@ -15,21 +15,24 @@ private:
     Memory* ram;
     Processor<uint32_t>* cpu;
     ComputerArchitecture& architecture;
-
+    long long unsigned int cycleCount = 0;
 
 public:
+    unsigned long long int getCycleCount() const {
+        return cycleCount;
+    }
 
-    int getRegistryCount() const
+    unsigned int getRegistryCount() const
     {
         return architecture.getRegistryCount();
     }
 
-    int getArchitectureWidth() const
+    unsigned int getArchitectureWidth() const
     {
         return architecture.getWordWidth();
     }
 
-    int getRegister(int registryNumber) const
+    unsigned int getRegister(int registryNumber) const
     {
         try
         {
@@ -68,12 +71,16 @@ public:
     {
         try
         {
-            cpu->cycle();
+            if(cpu->cycle())
+            {
+                cycleCount++;
+            }
         }
         catch(std::exception& e)
         {
             throw std::invalid_argument("Computer: [clock cycle] The CPU threw an exception, when attempting a clock cycle: "+std::string(e.what()));
         }
+
     }
 
     void resume()
@@ -91,7 +98,7 @@ public:
         cpu->runningMode();
     }
 
-    int output() const
+    unsigned int output() const
     {
         try
         {

@@ -43,9 +43,9 @@ void debugCycle(std::unordered_map<int,int>& breakpoints, Computer& unit)
             std::cin>>command;
             if(command == "x")
             {
-                int address;
+                unsigned int address;
                 std::cin>>address;
-                int value;
+                unsigned int value;
                 if(address<unit.getRegistryCount())
                 {
                     value = unit.getRegister(address);
@@ -82,7 +82,7 @@ void debugCycle(std::unordered_map<int,int>& breakpoints, Computer& unit)
             }
             else if(command == "xr")
             {
-                for(int i=0;i<unit.getRegistryCount();i++)
+                for(unsigned int i=0;i<unit.getRegistryCount();i++)
                 {
                     int value = unit.getRegister(i);
                     std::cout<<"Value of registry "<<i<<": ";
@@ -138,7 +138,8 @@ int main(int argc, char* argv[]) {
         int architecture;
         bool debug;
         bool printOutput;
-        applyProgramArguments(fileType, fileName, architecture, debug, printOutput, argc, argv);
+        bool cycles;
+        applyProgramArguments(fileType, fileName, architecture, debug, printOutput,cycles, argc, argv);
 
         ComputerArchitecture* piVersion = getArchitecture(architecture);
         Computer unit(*piVersion);
@@ -147,7 +148,7 @@ int main(int argc, char* argv[]) {
         programmer.program(fileName, unit);
 
         ControllerInterface interface(unit);
-        std::thread t1([&interface, debug, printOutput](){interface.run(debug, printOutput);});
+        std::thread t1([&interface, debug, printOutput, cycles](){interface.run(debug, printOutput, cycles);});
 
         run(unit, debug);
     }
