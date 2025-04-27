@@ -133,7 +133,7 @@ public:
 
     int getFlagSourceRegisterNumber(uint64_t instruction) override
     {
-        return (int)((flagMemoryBitmask & instruction) >> flagMemoryShift);
+        return (int)((flagAddressBitmask & instruction) >> flagAddressShift);
     }
 
     int getMemoryCellWidth() override
