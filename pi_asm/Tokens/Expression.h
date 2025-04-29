@@ -13,12 +13,13 @@ public:
     enum OperationType
     {
         ADD,
-        MUL
+        MUL,
+        UNDEFINED
     };
 private:
     bool negate =  false;
 
-    OperationType type;
+    OperationType type = UNDEFINED;
 
     unsigned int matchAddOns(std::vector<std::string> &tokens, unsigned int offset);
 public:

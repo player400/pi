@@ -1,0 +1,143 @@
+program_start;
+0 TIMES 3;
+0 TIMES 4;
+delay_ptr_minus: delay;
+coeff_ptr_minus: coeff;
+minusL: 240;
+L: 16;	//Delay line length;
+j: 0;	//Inner loop/coeff iterator;
+sum: 0;	
+//Delay line iterators;
+delay_begin: 0;	
+delay_ind: 0;
+
+
+
+
+
+
+program_start:
+
+//delay_ptr_minus and coeff_ptr_minus are supposed to contain delay_ptr+L and coeff_ptr+L, but initiially contain just pointers, so we are adding L;
+MOV 1, L;
+MOV 2, delay_ptr_minus;
+MOV delay_ptr_minus, 3;
+MOV 2, coeff_ptr_minus;
+MOV coeff_ptr_minus, 3;
+
+//We add L to those pointers, because our iterators are negative numbers (because comparing to 0 is faster, than comparing to L);
+
+
+ptl_out:
+	MOV 3, sum;	//Output;	
+	FLAG 0, true;
+	MOV 4, 3;	//Input;
+
+	MOV sum, zero;	//sum = 0;
+	MOV j, minusL;	// j will be oscillating in range <-L, -1>;
+
+	MOV 1, delay_begin;
+	MOV 2, minusL;
+	MOV delay_ind, 3;	//delay_ind = delay_begin - 16 (oscillation range of delay_ind is moved from <0, 15> to <-16, 1>;
+
+	//Putting input on the delay line;
+	MOV 2, delay_ptr;	//Adding index (delay_begin) to an array pointer (delay_begin is already in register 1, so no need to put it there again);
+	MOV arr1, 3;
+	MOV >arr1, 4;	
+	
+	ptl_in:
+		MOV 1, delay_ind;
+		MOV 2, delay_ptr_minus;
+		MOV arr2, 3;
+		MOV 4, >arr2;	//delay[delay_ind] put in R4 (Except delay_ind is L lower than it should be and array pointer is L higher thain it should be;
+
+
+		MOV 1, j;	
+		MOV 2, coeff_ptr_minus;
+		MOV arr3, 3;
+		MOV 1, >arr3;	//coeff[j] put in R2;
+
+		MOV 2, 4;	//Putting R4 in R1 (because we will be calling multiplication fucttion;
+	
+		//mul function call;
+		MOV 4, ret1_jmp;
+		MOV mul_ret, 4;
+		MOV 0, mul_func;
+		
+		ret1:
+
+		MOV 1, 3;
+		MOV 2, sum;
+		MOV sum, 3;	//Adding multiplication result to the sum;	
+
+		
+		//Adding 1 to both j and delay_ind;		
+		MOV 1, one;
+		MOV 2, delay_ind;
+		MOV delay_ind, 3;
+		MOV 2, j;
+		MOV j, 3;
+
+		//If delay_ind == 0, then setting it back to -L;
+		FLAG 1, delay_ind; 
+			MOV delay_ind, minusL;
+
+	FLAG 1, ~j;
+	MOV 0, ptl_in_jmp;
+
+	//Delay_begin oscillates in range <L-1, 0> - but if it reaches 0 we set it to L, because 1 will be subtracted anyway;
+	FLAG 1, delay_begin;
+		MOV delay_begin, L;
+	FLAG 1, false;
+	MOV 1, minus_one;
+	MOV 2, delay_begin;
+	MOV delay_begin, 3;
+
+
+MOV 0, ptl_out_jmp;
+
+ptl_out_jmp: ptl_out;	//Outer loop pointer;
+ptl_in_jmp: ptl_in;	//Inner loop pointer;
+
+
+//Function for multiplication of two 8-bit numbers. Arguments: R1, R2. Return Value: R3;
+mul_ret: 0;
+mul_iterator: 0;
+mul_sum: 0;
+mul_a: 0;
+mul_minus1: 255;
+mul_zero: 0;
+mul:
+	MOV 3, mul_zero;
+	FLAG 1, 1;
+		MOV 0, mul_ret;
+	FLAG 1, 2;
+		MOV 0, mul_ret;
+	FLAG 1, false;
+	MOV mul_sum, 3;
+	MOV mul_a, 2;
+	mul_ptl:
+		MOV 2, mul_minus1;
+		MOV mul_iterator, 3;
+		MOV 1, mul_sum;
+		MOV 2, mul_a;
+		MOV mul_sum, 3;
+		MOV 1, mul_iterator;	
+	FLAG 1, ~mul_iterator;
+	MOV 0, mul_ptl_jmp;
+	FLAG 1, false;
+	MOV 3, mul_sum;
+MOV 0, mul_ret;
+mul_func: mul;
+mul_ptl_jmp: mul_ptl;
+
+
+ret1_jmp: ret1; 
+zero: 0;
+two_four_one: 241;
+one: 1;
+minus_one: 255;
+coeff: 1 TIMES 16;
+delay: 0 TIMES 16;
+coeff_ptr: coeff;
+delay_ptr: delay;

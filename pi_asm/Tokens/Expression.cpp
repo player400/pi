@@ -81,6 +81,10 @@ unsigned int Expression::match(std::vector<std::string> &tokens, unsigned int of
             offset+=1;
         }
     }
+    if(type==UNDEFINED)
+    {
+        type = ADD;
+    }
     return sum;
 }
 
@@ -105,11 +109,12 @@ unsigned int Expression::matchAddOns(std::vector<std::string> &tokens, unsigned 
             }
             if(i>0)
             {
-                if(newType != type)
+                if(newType != type && type !=UNDEFINED)
                 {
                     throw std::invalid_argument("[Parsing expression] Syntax error: All operations performed on the values must be the same (either 2 '+' or 2 '*')");
                 }
             }
+            type = newType;
             sum++;
         }
         Pattern* logic = new Logic;

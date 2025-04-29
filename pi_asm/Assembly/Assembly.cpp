@@ -286,12 +286,10 @@ int Assembly::getTrueValue(Value *value) {
     {
         return stoi(value->getValue());
     }
-    else if(type == Value::REFERENCE)
-    {
+    else if(type == Value::REFERENCE) {
         auto symbol = symbolMap.find(value->getValue());
-        if(symbol == symbolMap.end())
-        {
-            throw std::invalid_argument("Referenced value '"+value->getValue()="' has not been declared.");
+        if (symbol == symbolMap.end()) {
+            throw std::invalid_argument("Referenced value '" + value->getValue() = "' has not been declared.");
         }
         return symbol->second;
     }

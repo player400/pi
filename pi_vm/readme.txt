@@ -46,6 +46,10 @@ Navigation:
 		-is_odd.bin - Binary file with a program deciding if a number is odd
 	/8-bit 
 		-hello_world.hex - Hexadecimal file with a program sending Hello, world! to output
+		-soi8bit.bin - Binary file with a program computing Finite Impulse Response filter with 16-sample long delay line (all coefficients set to 1 in an array). It takes 8-bit inputs and produces 8-bit outputs.
+		-soi8bit_nm.bin - Binary file with a program computing Finite Impulse Response filter with 16-sample long delay line, assuming that coefficient is always 1. It takes 8-bit inputs and produces 8-bit outputs.
+		-soi16bit.bin - Binary file with a program computing Finite Impulse Response filter with 16-sample long delay line (all coefficients set to 1 in an array). It takes 8-bit inputs and produces 16-bit outputs.
+		-soi16bit_nm.bin - Binary file with a program computing Finite Impulse Response filter with 16-sample long delay line, assuming that coefficient is always 1. It takes 8-bit inputs and produces 16-bit outputs.
 -ControllerInterface.h - Class responsible for interacting between the user and the emulated machine.
 -main.cpp - main function that sets everything up
 -ProgramArgumentProcessing.h - Code for parsing command line program arguments
