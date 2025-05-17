@@ -1,0 +1,1 @@
+djtgcfg prog -d Atlys -i 0 -f top.bit
