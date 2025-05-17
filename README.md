@@ -62,7 +62,7 @@ Supporting:\
 
 Short term<br/>
 _______________________________________________________________________<br/>
-    -developing an 8-bit PI computer on an FPGA<br/>
+    -developing an 8-bit PI computer on an FPGA (IN PROGRESS)<br/>
 
 
 <br/>
@@ -75,7 +75,7 @@ _______________________________________________________________________<br/>
     
 ## Navigation
 
-PL_4bit folder contains everything pertaining to the 4-bit PI, pi_vm folder contains the emulator, pi_asm folder contains the assembler.
+PI_4bit folder contains everything pertaining to the 4-bit PI, PI_8bit folder contains everything pertaining to the 8-bit PI, pi_vm folder contains the emulator, pi_asm folder contains the assembler.
 
 
 
