@@ -41,17 +41,26 @@ end registry_acc;
 
 architecture Behavioral of registry_acc is
 	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= "00000000";
+	SIGNAL staging: STD_LOGIC_VECTOR(7 downto 0);
 	SIGNAL carry_state: STD_LOGIC := '0';
 begin
 
-	setter: process(clk) begin
+	stager: process(clk) begin
 		if rising_edge(clk) then
+			if set = '1' then
+				staging <= input;
+			end if;
+		end if;
+	end process stager;
+	
+	setter: process(clk) begin
+		if falling_edge(clk) then
 			if set_alu = '1' then
 				state <= input_alu(7 downto 0);
 				carry_state <= input_alu(8);
-			else 
+			else
 				if set = '1' then
-					state <= input;
+					state <= staging;
 				end if;
 			end if;
 		end if;

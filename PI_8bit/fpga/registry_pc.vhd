@@ -34,6 +34,7 @@ entity registry_pc is
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
            set : in  STD_LOGIC;
            output : out  STD_LOGIC_VECTOR (7 downto 0);
+			  iterate: in STD_LOGIC;
            clk : in  STD_LOGIC);
 end registry_pc;
 
@@ -45,7 +46,9 @@ begin
 			if set = '1' then
 				state <= input;
 			else 
-				state <= std_logic_vector(to_unsigned(to_integer(unsigned(state)) + 2, state'length));
+				if iterate = '1' then
+					state <= std_logic_vector(to_unsigned(to_integer(unsigned(state)) + 2, state'length));
+				end if;
 			end if;
 		end if;
 	end process setter;

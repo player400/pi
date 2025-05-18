@@ -31,6 +31,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity registry_bank is
     Port ( clk : in  STD_LOGIC;
+			  iterate: in STD_LOGIC;
            set : in  STD_LOGIC;
            input : in  STD_LOGIC_VECTOR (7 downto 0);
            input_address : in  integer;
@@ -62,6 +63,7 @@ COMPONENT registry_pc is
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
            set : in  STD_LOGIC;
            output : out  STD_LOGIC_VECTOR (7 downto 0);
+			  iterate : in STD_LOGIC;
            clk : in  STD_LOGIC);
 END COMPONENT registry_pc;
 
@@ -119,7 +121,8 @@ begin
 		input => input,
 		output => pc_out,
 		set => pc_set,
-		clk =>clk
+		iterate => iterate,
+		clk => clk
 	);
 	
 	aplha_reg: registry_ab PORT MAP(
@@ -170,6 +173,12 @@ begin
 	
 	gpr_in_adr <= input_address - 4;
 	gpr_out_adr <= output_address_trimmed - 4;
+	
+	alpha <= alpha_out;
+	beta <= beta_out;
+	pc <= pc_out;
+	acc <= acc_out;
+	
 	
 end Behavioral;
 

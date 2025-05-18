@@ -43,34 +43,32 @@ entity top is
 	);
 end top;
 
+
 architecture Behavioral of top is
 
-COMPONENT registry_bank is
-    Port ( 
-			  clk : in  STD_LOGIC;
-           set : in  STD_LOGIC;
-           input : in  STD_LOGIC_VECTOR (7 downto 0);
-           input_address : in  integer;
-			  output: out STD_LOGIC_VECTOR (7 downto 0);
-           output_address : in  integer;
-			  alu_set: in STD_LOGIC
-			  );
-END COMPONENT registry_bank;
+COMPONENT microcontroller is
+    Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
+           output : out  STD_LOGIC_VECTOR (7 downto 0);
+			  input_confirm : in STD_LOGIC;
+           clk : in  STD_LOGIC;
+           address : in  integer);
+END COMPONENT microcontroller;
+
 
 SIGNAL temp: STD_LOGIC_VECTOR(7 downto 0);
 SIGNAL adr: integer;
 
 begin
-
-	ram: registry_bank PORT MAP (
-		clk => clk_i,
-		set => btnl_i,
+	
+	pi: microcontroller PORT MAP(
 		input => sw_i,
-		input_address => adr,
 		output => led_o,
-		output_address => adr,
-		alu_set => '0'
+		input_confirm => btnl_i,
+		clk => clk_i,
+		address => adr
+	
 	);
+
 
 	temp(0) <= btnu_i;
 	temp(1) <= btnc_i;
