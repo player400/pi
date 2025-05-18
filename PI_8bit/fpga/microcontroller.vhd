@@ -47,8 +47,10 @@ architecture Behavioral of microcontroller is
 				  input : in  STD_LOGIC_VECTOR (7 downto 0);
 				  input_address : in  integer;
 				  output: out STD_LOGIC_VECTOR (7 downto 0);
+				  ir_output : out  STD_LOGIC_VECTOR (15 downto 0);
 				  output_address : in  integer;
 				  alu_set: in STD_LOGIC;
+				  carry : out STD_LOGIC;
 				  alu_input: in STD_LOGIC_VECTOR (8 downto 0);
 				  alpha : out  STD_LOGIC_VECTOR (7 downto 0);
 				  beta : out  STD_LOGIC_VECTOR (7 downto 0)
@@ -62,6 +64,45 @@ architecture Behavioral of microcontroller is
 				  flag_1 : in  STD_LOGIC;
 				  flag_2 : in  STD_LOGIC);
 	END COMPONENT alu;
+	
+	COMPONENT memory is
+    Port ( address : in  integer;
+           input : in  STD_LOGIC_VECTOR (7 downto 0);
+           set : in  STD_LOGIC;
+			  output: out STD_LOGIC_VECTOR (7 downto 0);
+           ir_output : out  STD_LOGIC_VECTOR (15 downto 0);
+           clk : in  STD_LOGIC);
+	END COMPONENT memory;
+	
+	COMPONENT flag_register is
+    Port ( clk : in  STD_LOGIC;
+           set : in  STD_LOGIC;
+           flag_number : in  integer;
+           value : in  STD_LOGIC;
+           carry : in  STD_LOGIC;
+           include_carry : in  STD_LOGIC;
+           memory : in  STD_LOGIC_VECTOR(7 downto 0);
+           include_memory : in  STD_LOGIC;
+           negate : in  STD_LOGIC;
+           operation : in  STD_LOGIC;
+           hf : out  STD_LOGIC;
+           sf : out  STD_LOGIC;
+           af1 : out  STD_LOGIC;
+           af2 : out  STD_LOGIC);
+	END COMPONENT flag_register;
+	
+	SIGNAL hf: STD_LOGIC;
+	SIGNAL sf: STD_LOGIC;
+	SIGNAL af1: STD_LOGIC;
+	SIGNAL af2: STD_LOGIC;
+	
+	SIGNAL flag_number: integer;
+	SIGNAL flag_value: STD_LOGIC;
+	SIGNAL flag_include_carry: STD_LOGIC;
+	SIGNAL flag_include_memory: STD_LOGIC;
+	SIGNAL flag_negate: STD_LOGIC;
+	SIGNAL flag_operation: STD_LOGIC;
+	SIGNAL carry: STD_LOGIC;
 
 	SIGNAL alu_set: STD_LOGIC;
 	SIGNAL alu_bus: STD_LOGIC_VECTOR(8 downto 0);
@@ -74,19 +115,40 @@ architecture Behavioral of microcontroller is
 	SIGNAL iterate: STD_LOGIC := '1';
 	
 	SIGNAL set_register: STD_LOGIC;
+	SIGNAL set_memory: STD_LOGIC;
+	SIGNAL set_flag: STD_LOGIC;
 	
 	SIGNAL rq_set_register: STD_LOGIC;
+	SIGNAL rq_set_memory: STD_LOGIC;
+	SIGNAL rq_set_flag: STD_LOGIC;
+	
+	SIGNAL register_output: STD_LOGIC_VECTOR(7 downto 0);
+	SIGNAL memory_output: STD_LOGIC_VECTOR(7 downto 0);
+	
+	SIGNAL ir_register_output: STD_LOGIC_VECTOR(15 downto 0);
+	SIGNAL ir_memory_output: STD_LOGIC_VECTOR(15 downto 0);
+	
+	SIGNAL registry_input_address: integer;
+	SIGNAL registry_output_address: integer;
+	SIGNAL memory_address: integer := 30;
+	
+	SIGNAL general_bus: STD_LOGIC_VECTOR(7 downto 0);
+	
+	SIGNAL temp_test_carry: STD_LOGIC;
+	
 begin
 
-	ram: registry_bank PORT MAP (
+	registers: registry_bank PORT MAP (
 		clk => clk,
 		iterate => iterate,
 		set => set_register,
 		input => input,
-		input_address => address,
-		output => output,
-		output_address => address,
+		input_address => registry_input_address,
+		output => register_output,
+		ir_output => ir_register_output,
+		output_address => registry_output_address,
 		alu_set => alu_set,
+		carry => carry,
 		alu_input => alu_bus,
 		alpha => alpha,
 		beta => beta
@@ -96,15 +158,67 @@ begin
 		input_a => alpha,
 		input_b => beta,
 		output => alu_bus,
-		flag_1 => '0',
-		flag_2 => '0'
+		flag_1 => af1,
+		flag_2 => af2
+	);
+	
+	ram: memory PORT MAP (
+		address => memory_address,
+		input => input,
+		set => set_memory,
+		output => memory_output,
+		ir_output => ir_memory_output,
+		clk => clk
+	);
+	
+	flags: flag_register PORT MAP (
+		clk => clk,
+      set => set_flag,
+      flag_number => flag_number,
+      value => flag_value,
+      carry => temp_test_carry,
+      include_carry => flag_include_carry,
+      memory => general_bus,
+      include_memory => flag_include_memory,
+      negate => flag_negate,
+      operation => flag_operation,
+      hf => hf,
+      sf => sf,
+      af1 => af1,
+      af2 => af2
 	);
 	
 	set_register <= execute and iterate and rq_set_register;
-	
-	rq_set_register <= input_confirm;
+	set_memory <= execute and iterate and rq_set_memory;
+	set_flag <= (iterate and rq_set_flag) when flag_number = 1 else (iterate and execute and rq_set_flag);
 	
 	alu_set <= '1' when (set_register = '1' and (address = 1 or address = 2)) else '0';
+	
+	rq_set_memory <= '0';
+	rq_set_register <= '0';
+	rq_set_flag <= input_confirm;
+	
+	output(0) <= hf;
+	output(1) <= sf;
+	output(2) <= af1;
+	output(3) <= af2;
+	
+	output(7 downto 4) <= "0000";
+	
+	flag_number <= address;
+	
+	flag_value <= input(0);
+	flag_include_carry <= input(1);
+	flag_include_memory <= input(2);
+	flag_operation <= input(3);
+	flag_negate <= input(4);
+	
+	temp_test_carry <= input(7);
+	
+	general_bus <= "10010000";
+	
+	registry_input_address <= address;
+	registry_output_address <= address;
 
 end Behavioral;
 

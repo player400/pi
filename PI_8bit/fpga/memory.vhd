@@ -33,13 +33,15 @@ entity memory is
     Port ( address : in  integer;
            input : in  STD_LOGIC_VECTOR (7 downto 0);
            set : in  STD_LOGIC;
-           output : out  STD_LOGIC_VECTOR (15 downto 0);
+			  output: out STD_LOGIC_VECTOR (7 downto 0);
+           ir_output : out  STD_LOGIC_VECTOR (15 downto 0);
            clk : in  STD_LOGIC);
 end memory;
 
 architecture mem of memory is
 
 	SIGNAL state: STD_LOGIC_VECTOR(1919 downto 0);
+	SIGNAL address_trimmed: integer;
 
 begin
 	setter: process(clk) begin
@@ -49,8 +51,12 @@ begin
 			end if;
 		end if;
 	end process setter;
+	
+	address_trimmed <= address when (address MOD 2 = 0) else (address - 1);
 
-	output(15 downto 8) <= state(address*8 + 7 downto address*8);
-	output(7 downto 0) <= state(address*8 + 15 downto address*8 + 8);
+	ir_output(15 downto 8) <= state(address_trimmed*8 + 7 downto address_trimmed*8);
+	ir_output(7 downto 0) <= state(address_trimmed*8 + 15 downto address_trimmed*8 + 8);
+	
+	output <= state(address*8+7 downto address*8);
 end mem;
 
