@@ -37,7 +37,7 @@ entity registry_ab is
 end registry_ab;
 
 architecture Behavioral of registry_ab is
-	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= "00000000";
+	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= "01100110";
 begin
 	setter: process(clk) begin
 		if rising_edge(clk) then

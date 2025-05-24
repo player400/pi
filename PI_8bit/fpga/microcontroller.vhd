@@ -19,6 +19,7 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -52,6 +53,8 @@ architecture Behavioral of microcontroller is
 				  alu_set: in STD_LOGIC;
 				  carry : out STD_LOGIC;
 				  alu_input: in STD_LOGIC_VECTOR (8 downto 0);
+				  acc : out  STD_LOGIC_VECTOR (7 downto 0);
+				  pc : out  STD_LOGIC_VECTOR (7 downto 0);
 				  alpha : out  STD_LOGIC_VECTOR (7 downto 0);
 				  beta : out  STD_LOGIC_VECTOR (7 downto 0)
 				 );
@@ -91,11 +94,37 @@ architecture Behavioral of microcontroller is
            af2 : out  STD_LOGIC);
 	END COMPONENT flag_register;
 	
+	COMPONENT ir IS
+    Port ( input : in  STD_LOGIC_VECTOR (15 downto 0);
+           opcode : out  STD_LOGIC;
+           mov_reverse : out  STD_LOGIC;
+           mov_registry_number : out  STD_LOGIC_VECTOR (3 downto 0);
+           flag_flag_number : out  STD_LOGIC_VECTOR (1 downto 0);
+           flag_negate : out  STD_LOGIC;
+           flag_carry : out  STD_LOGIC;
+           flag_memory : out  STD_LOGIC;
+           flag_operation : out  STD_LOGIC;
+           flag_value : out  STD_LOGIC;
+           address : out  STD_LOGIC_VECTOR (7 downto 0);
+           clk : in  STD_LOGIC);
+	END COMPONENT ir;
+
+	SIGNAL ir_input : STD_LOGIC_VECTOR (15 downto 0) := "0100010000000010";
+   SIGNAL opcode : STD_LOGIC;
+	
+   SIGNAL mov_reverse : STD_LOGIC;
+   SIGNAL mov_registry_number_vector : STD_LOGIC_VECTOR (3 downto 0);
+	SIGNAL mov_registry_number : integer;
+	
+   SIGNAL ir_address_vector : STD_LOGIC_VECTOR (7 downto 0);
+	SIGNAL ir_address: integer;
+	
 	SIGNAL hf: STD_LOGIC;
 	SIGNAL sf: STD_LOGIC;
 	SIGNAL af1: STD_LOGIC;
 	SIGNAL af2: STD_LOGIC;
 	
+	SIGNAL flag_number_vector: STD_LOGIC_VECTOR(1 downto 0);
 	SIGNAL flag_number: integer;
 	SIGNAL flag_value: STD_LOGIC;
 	SIGNAL flag_include_carry: STD_LOGIC;
@@ -132,17 +161,38 @@ architecture Behavioral of microcontroller is
 	SIGNAL registry_output_address: integer;
 	SIGNAL memory_address: integer := 30;
 	
+	SIGNAL current_memreg_address: integer;
+	SIGNAL register_as_memory_address: integer;
+	
 	SIGNAL general_bus: STD_LOGIC_VECTOR(7 downto 0);
 	
 	SIGNAL temp_test_carry: STD_LOGIC;
 	
+	SIGNAL pc: STD_LOGIC_VECTOR(7 downto 0);
+	SIGNAL acc: STD_LOGIC_VECTOR(7 downto 0);
+	
 begin
+
+	instruction: ir PORT MAP (
+		input => ir_input,
+      opcode => opcode,
+      mov_reverse => mov_reverse,
+      mov_registry_number => mov_registry_number_vector,
+      flag_flag_number => flag_number_vector,
+      flag_negate => flag_negate,
+      flag_carry => flag_include_carry,
+      flag_memory => flag_include_memory,
+      flag_operation => flag_operation,
+      flag_value => flag_value,
+      address => ir_address_vector,
+      clk => clk
+	);
 
 	registers: registry_bank PORT MAP (
 		clk => clk,
 		iterate => iterate,
 		set => set_register,
-		input => input,
+		input => general_bus,
 		input_address => registry_input_address,
 		output => register_output,
 		ir_output => ir_register_output,
@@ -151,7 +201,9 @@ begin
 		carry => carry,
 		alu_input => alu_bus,
 		alpha => alpha,
-		beta => beta
+		beta => beta,
+		acc => acc,
+		pc => pc
 	);
 
 	arith_logic_unit: alu PORT MAP (
@@ -192,33 +244,35 @@ begin
 	set_memory <= execute and iterate and rq_set_memory;
 	set_flag <= (iterate and rq_set_flag) when flag_number = 1 else (iterate and execute and rq_set_flag);
 	
-	alu_set <= '1' when (set_register = '1' and (address = 1 or address = 2)) else '0';
+	alu_set <= '1' when (set_register = '1' and (registry_input_address = 1 or registry_input_address = 2)) else '0';
 	
-	rq_set_memory <= '0';
-	rq_set_register <= '0';
-	rq_set_flag <= input_confirm;
+	rq_set_memory <= '1' when (opcode = '0' and (mov_reverse='1' and ir_address>15)) else '0';
+	rq_set_register <= '0' when (opcode = '1' or (mov_reverse='1' and ir_address>15)) else '1';
+	rq_set_flag <= opcode;
 	
-	output(0) <= hf;
-	output(1) <= sf;
-	output(2) <= af1;
-	output(3) <= af2;
+	flag_number <= to_integer(unsigned(flag_number_vector));
+	ir_address <= to_integer(unsigned(ir_address_vector));
+	mov_registry_number <= to_integer(unsigned(mov_registry_number_vector));
 	
-	output(7 downto 4) <= "0000";
-	
-	flag_number <= address;
-	
-	flag_value <= input(0);
-	flag_include_carry <= input(1);
-	flag_include_memory <= input(2);
-	flag_operation <= input(3);
-	flag_negate <= input(4);
+	output <= acc;
+		
+
 	
 	temp_test_carry <= input(7);
 	
-	general_bus <= "10010000";
 	
-	registry_input_address <= address;
-	registry_output_address <= address;
+	general_bus <= register_output when ((current_memreg_address < 16 and (opcode = '1' or mov_reverse = '0')) or (opcode = '0' and mov_reverse = '1')) else memory_output;
+	
+
+	
+	memory_address <= current_memreg_address - 16;
+	
+	register_as_memory_address <= current_memreg_address when current_memreg_address < 16 else 0;
+	
+	current_memreg_address <= ir_address;
+	registry_output_address <= register_as_memory_address when (opcode='1' or mov_reverse='0') else mov_registry_number;
+	registry_input_address <= register_as_memory_address when mov_reverse = '1' else mov_registry_number;
+	
 
 end Behavioral;
 

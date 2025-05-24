@@ -49,6 +49,7 @@ begin
 			if set = '1' then
 				state(address*8 + 7 downto address*8) <= input;
 			end if;
+			state(15 downto 8) <= "00010001";
 		end if;
 	end process setter;
 	
