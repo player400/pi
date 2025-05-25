@@ -171,8 +171,8 @@ begin
 	acc_set <= set when input_address = 3 else '0';
 	gpr_set <= set when input_address > 3 else '0';
 	
-	gpr_in_adr <= input_address - 4;
-	gpr_out_adr <= output_address_trimmed - 4;
+	gpr_in_adr <= input_address - 4 when input_address > 3 else 0;
+	gpr_out_adr <= output_address_trimmed - 4 when output_address_trimmed > 3 else 0;
 	
 	alpha <= alpha_out;
 	beta <= beta_out;

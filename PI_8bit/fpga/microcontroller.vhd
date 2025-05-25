@@ -109,7 +109,7 @@ architecture Behavioral of microcontroller is
            clk : in  STD_LOGIC);
 	END COMPONENT ir;
 
-	SIGNAL ir_input : STD_LOGIC_VECTOR (15 downto 0) := "0100010000000010";
+	SIGNAL ir_input : STD_LOGIC_VECTOR (15 downto 0);
    SIGNAL opcode : STD_LOGIC;
 	
    SIGNAL mov_reverse : STD_LOGIC;
@@ -166,10 +166,10 @@ architecture Behavioral of microcontroller is
 	
 	SIGNAL general_bus: STD_LOGIC_VECTOR(7 downto 0);
 	
-	SIGNAL temp_test_carry: STD_LOGIC;
-	
-	SIGNAL pc: STD_LOGIC_VECTOR(7 downto 0);
+	SIGNAL pc_vector: STD_LOGIC_VECTOR(7 downto 0);
+	SIGNAL pc: integer;
 	SIGNAL acc: STD_LOGIC_VECTOR(7 downto 0);
+	
 	
 begin
 
@@ -203,7 +203,7 @@ begin
 		alpha => alpha,
 		beta => beta,
 		acc => acc,
-		pc => pc
+		pc => pc_vector
 	);
 
 	arith_logic_unit: alu PORT MAP (
@@ -216,7 +216,7 @@ begin
 	
 	ram: memory PORT MAP (
 		address => memory_address,
-		input => input,
+		input => general_bus,
 		set => set_memory,
 		output => memory_output,
 		ir_output => ir_memory_output,
@@ -228,7 +228,7 @@ begin
       set => set_flag,
       flag_number => flag_number,
       value => flag_value,
-      carry => temp_test_carry,
+      carry => carry,
       include_carry => flag_include_carry,
       memory => general_bus,
       include_memory => flag_include_memory,
@@ -253,25 +253,28 @@ begin
 	flag_number <= to_integer(unsigned(flag_number_vector));
 	ir_address <= to_integer(unsigned(ir_address_vector));
 	mov_registry_number <= to_integer(unsigned(mov_registry_number_vector));
+	pc <= to_integer(unsigned(pc_vector));
 	
 	output <= acc;
 		
-
+	iterate <= not hf;
 	
-	temp_test_carry <= input(7);
+	execute <= not sf;
 	
 	
 	general_bus <= register_output when ((current_memreg_address < 16 and (opcode = '1' or mov_reverse = '0')) or (opcode = '0' and mov_reverse = '1')) else memory_output;
 	
 
 	
-	memory_address <= current_memreg_address - 16;
+	memory_address <= current_memreg_address - 16 when current_memreg_address > 15 else 0;
 	
 	register_as_memory_address <= current_memreg_address when current_memreg_address < 16 else 0;
 	
-	current_memreg_address <= ir_address;
-	registry_output_address <= register_as_memory_address when (opcode='1' or mov_reverse='0') else mov_registry_number;
+	current_memreg_address <= ir_address when clk = '0' else pc;
+	registry_output_address <= register_as_memory_address when clk = '1' or (opcode='1' or mov_reverse='0') else mov_registry_number;
 	registry_input_address <= register_as_memory_address when mov_reverse = '1' else mov_registry_number;
+	
+	ir_input <= ir_register_output when current_memreg_address < 16 else ir_memory_output;
 	
 
 end Behavioral;

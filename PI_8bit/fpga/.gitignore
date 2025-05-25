@@ -66,6 +66,12 @@ par_usage_statistics.html
 usage_statistics_webtalk.html
 webtalk.log
 webtalk_pn.xml
+*.txt
+*.tcl
+*.debug
+planAhead*
+smartxplorer*
+*.xdl
 
 # generated folders
 iseconfig/

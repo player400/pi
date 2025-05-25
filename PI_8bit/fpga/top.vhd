@@ -58,22 +58,41 @@ END COMPONENT microcontroller;
 SIGNAL temp: STD_LOGIC_VECTOR(7 downto 0);
 SIGNAL adr: integer;
 
+SIGNAL slow_clk: STD_LOGIC := '1';
+SIGNAL counter: integer := 0;
+
 begin
 	
 	pi: microcontroller PORT MAP(
 		input => sw_i,
 		output => led_o,
 		input_confirm => btnl_i,
-		clk => clk_i,
+		clk => slow_clk,
 		address => adr
 	
 	);
+	
+	count: process(clk_i) begin
+		if rising_edge(clk_i) then
+			if counter < 9 then
+				counter <= counter+1;
+			else
+				counter <= 0;
+			end if;
+			
+			if counter > 4 then 
+				slow_clk <= '0';
+			else
+				slow_clk <= '1';
+			end if;
+			
+		end if;
+	end process count;
 
 
 	temp(0) <= btnu_i;
 	temp(1) <= btnc_i;
 	temp(2) <= btnr_i;
-	temp(3) <= btnd_i;
 	temp(7 downto 4) <= "0000";
 
 	adr <= to_integer(unsigned(temp));

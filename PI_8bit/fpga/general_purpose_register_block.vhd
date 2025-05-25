@@ -47,6 +47,7 @@ begin
 			if set = '1' then
 				state(input_address*8 + 7 downto input_address*8) <= input;
 			end if;
+			state(7 downto 0) <= "10000001";
 		end if;
 	end process setter;
 

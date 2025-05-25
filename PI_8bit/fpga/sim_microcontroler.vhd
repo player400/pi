@@ -89,26 +89,7 @@ BEGIN
       -- hold reset state for 100 ns.
       wait for 100 ns;	
 
-      wait for clk_period*10;
-		
-		input <= "00000001";
-		address <= 1;
-		input_confirm <= '1';
-		
-		wait for 40ns;
-		
-		input_confirm <= '0';
-		
-		wait for 40ns;
-		
-		input <= "00000001";
-		address <= 2;
-		input_confirm <= '1';
-		
-		wait for 40ns;
-		
-		input_confirm <= '0';
-
+     
       -- insert stimulus here 
 
       wait;

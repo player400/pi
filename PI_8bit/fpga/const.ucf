@@ -21,5 +21,6 @@ NET "btnr_i" LOC = "F6";
 NET "btnd_i" LOC = "P3";
 
 NET "clk_i" LOC = "L15";
+NET "slow_clk" PERIOD = 100ns;
 
 NET "btnd_i" CLOCK_DEDICATED_ROUTE = FALSE;

@@ -39,7 +39,7 @@ entity registry_pc is
 end registry_pc;
 
 architecture Behavioral of registry_pc is
-	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= "00000000";
+	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= "00010000";
 begin
 	setter: process(clk) begin
 		if rising_edge(clk) then

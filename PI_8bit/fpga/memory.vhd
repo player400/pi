@@ -49,7 +49,12 @@ begin
 			if set = '1' then
 				state(address*8 + 7 downto address*8) <= input;
 			end if;
-			state(15 downto 8) <= "00010001";
+			state(7 downto 0) <= "01010000";
+			state(15 downto 8) <= "10000000";
+			state(23 downto 16) <= "00001000";
+			state(31 downto 24) <= "10000000";
+			state(39 downto 32) <= "10010000";
+			state(47 downto 40) <= "00000000";
 		end if;
 	end process setter;
 	
