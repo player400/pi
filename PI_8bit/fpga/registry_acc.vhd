@@ -40,7 +40,7 @@ entity registry_acc is
 end registry_acc;
 
 architecture Behavioral of registry_acc is
-	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= "00000000";
+	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= X"1E";
 	SIGNAL staging: STD_LOGIC_VECTOR(7 downto 0);
 	SIGNAL carry_state: STD_LOGIC := '0';
 begin

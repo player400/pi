@@ -68,6 +68,9 @@ COMPONENT registry_pc is
 END COMPONENT registry_pc;
 
 COMPONENT registry_ab is
+	 Generic (
+			  initial: STD_LOGIC_VECTOR (7 downto 0)
+	 );
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
            set : in  STD_LOGIC;
            output : out  STD_LOGIC_VECTOR (7 downto 0);
@@ -117,7 +120,8 @@ begin
 		clk => clk
 	);
 	
-	pc_reg: registry_pc PORT MAP(
+	pc_reg: registry_pc 
+	PORT MAP(
 		input => input,
 		output => pc_out,
 		set => pc_set,
@@ -125,7 +129,11 @@ begin
 		clk => clk
 	);
 	
-	aplha_reg: registry_ab PORT MAP(
+	aplha_reg: registry_ab 
+	GENERIC MAP (
+		initial => X"1E"
+	)
+	PORT MAP(
 		input => input,
 		output => alpha_out,
 		set => alpha_set,
@@ -133,7 +141,11 @@ begin
 	
 	);
 	
-	beta_reg: registry_ab PORT MAP(
+	beta_reg: registry_ab 
+	GENERIC MAP (
+		initial => X"00"
+	)
+	PORT MAP(
 		input => input,
 		output => beta_out,
 		set => beta_set,

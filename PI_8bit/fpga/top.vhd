@@ -50,6 +50,7 @@ COMPONENT microcontroller is
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
            output : out  STD_LOGIC_VECTOR (7 downto 0);
 			  input_confirm : in STD_LOGIC;
+			  resume : in STD_LOGIC;
            clk : in  STD_LOGIC;
            address : in  integer);
 END COMPONENT microcontroller;
@@ -61,12 +62,18 @@ SIGNAL adr: integer;
 SIGNAL slow_clk: STD_LOGIC := '1';
 SIGNAL counter: integer := 0;
 
+SIGNAL resume_rising_edge_detector: integer := 0;
+
+SIGNAL resume: STD_LOGIC;
+SIGNAL resume_edge: STD_LOGIC;
+
 begin
 	
 	pi: microcontroller PORT MAP(
 		input => sw_i,
 		output => led_o,
-		input_confirm => btnl_i,
+		input_confirm => btnc_i,
+		resume => resume_edge,
 		clk => slow_clk,
 		address => adr
 	
@@ -74,26 +81,36 @@ begin
 	
 	count: process(clk_i) begin
 		if rising_edge(clk_i) then
-			if counter < 9 then
+			if counter < 19 then
 				counter <= counter+1;
 			else
 				counter <= 0;
 			end if;
 			
-			if counter > 4 then 
+			if counter > 9 then 
 				slow_clk <= '0';
 			else
 				slow_clk <= '1';
 			end if;
-			
 		end if;
 	end process count;
+	
+	rising_edge_detector: process(slow_clk) begin
+		if  rising_edge(slow_clk) then
+			if (resume = '1' or resume_rising_edge_detector > 0) then
+				resume_rising_edge_detector <= resume_rising_edge_detector+1;
+			end if;
+			if (resume_rising_edge_detector > 2000000 and resume='0') then
+				resume_rising_edge_detector <= 0;
+			end if;
+		end if;
+	end process rising_edge_detector;
 
+	resume <= btnr_i;
 
-	temp(0) <= btnu_i;
-	temp(1) <= btnc_i;
-	temp(2) <= btnr_i;
-	temp(7 downto 4) <= "0000";
+	resume_edge <= '1' when (resume_rising_edge_detector = 0 and resume = '1') else '0';
+
+	temp(7 downto 0) <= "00000000";
 
 	adr <= to_integer(unsigned(temp));
 end Behavioral;

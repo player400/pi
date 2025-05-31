@@ -30,6 +30,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity registry_ab is
+	 Generic (
+		initial : STD_LOGIC_VECTOR(7 downto 0)
+	 );
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
            set : in  STD_LOGIC;
            output : out  STD_LOGIC_VECTOR (7 downto 0);
@@ -37,7 +40,7 @@ entity registry_ab is
 end registry_ab;
 
 architecture Behavioral of registry_ab is
-	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= "01100110";
+	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= initial;
 begin
 	setter: process(clk) begin
 		if rising_edge(clk) then

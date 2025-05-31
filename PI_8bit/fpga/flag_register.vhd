@@ -32,6 +32,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity flag_register is
     Port ( clk : in  STD_LOGIC;
            set : in  STD_LOGIC;
+			  resume : in STD_LOGIC;
            flag_number : in  integer;
            value : in  STD_LOGIC;
            carry : in  STD_LOGIC;
@@ -56,15 +57,19 @@ SIGNAL memory_or: STD_LOGIC;
 
 SIGNAL final: STD_LOGIC;
 
+
+
 begin
 	
-	setter: process(clk) begin
+	setter: process(clk, resume) begin
 		if rising_edge(clk) then
 			if set = '1' then
 				state(flag_number) <= final;
 			end if;
 		end if;
-	
+		if resume = '1' then
+			state(0) <= '0';
+		end if;
 	end process setter;
 
 

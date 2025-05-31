@@ -39,7 +39,7 @@ entity general_purpose_register_block is
 end general_purpose_register_block;
 
 architecture Behavioral of general_purpose_register_block is
-	SIGNAL state: STD_LOGIC_VECTOR(95 downto 0);
+	SIGNAL state: STD_LOGIC_VECTOR(95 downto 0) := X"10040E000F0202010F070100";
 begin
 	
 	setter: process(clk) begin
@@ -47,7 +47,6 @@ begin
 			if set = '1' then
 				state(input_address*8 + 7 downto input_address*8) <= input;
 			end if;
-			state(7 downto 0) <= "10000001";
 		end if;
 	end process setter;
 

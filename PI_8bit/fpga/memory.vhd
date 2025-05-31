@@ -40,7 +40,7 @@ end memory;
 
 architecture mem of memory is
 
-	SIGNAL state: STD_LOGIC_VECTOR(1919 downto 0);
+	SIGNAL state: STD_LOGIC_VECTOR(1919 downto 0) := X"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000021646C726F77202C6F6C6C65480F00050804040090000C0310154C";
 	SIGNAL address_trimmed: integer;
 
 begin
@@ -49,12 +49,22 @@ begin
 			if set = '1' then
 				state(address*8 + 7 downto address*8) <= input;
 			end if;
-			state(7 downto 0) <= "01010000";
-			state(15 downto 8) <= "10000000";
-			state(23 downto 16) <= "00001000";
-			state(31 downto 24) <= "10000000";
-			state(39 downto 32) <= "10010000";
-			state(47 downto 40) <= "00000000";
+--			state(7 downto 0) <= "01010000";
+--			state(15 downto 8) <= "10000000";
+--			state(23 downto 16) <= "00001000";
+--			state(31 downto 24) <= "10000000";
+--			state(39 downto 32) <= "10010000";
+--			state(47 downto 40) <= "00000000";
+--			state(55 downto 48) <= "00001100";
+--			state(63 downto 56) <= "00000001";
+--			state(71 downto 64) <= "10010000";
+--			state(79 downto 72) <= "00000000";
+--			state(87 downto 80) <= "00000000";
+--			state(95 downto 88) <= "00011100";
+--			state(103 downto 96) <= "00010010";
+
+
+
 		end if;
 	end process setter;
 	

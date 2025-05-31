@@ -34,6 +34,7 @@ entity microcontroller is
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
            output : out  STD_LOGIC_VECTOR (7 downto 0);
 			  input_confirm : in STD_LOGIC;
+			  resume : in STD_LOGIC;
            clk : in  STD_LOGIC;
            address : in  integer);
 end microcontroller;
@@ -80,6 +81,7 @@ architecture Behavioral of microcontroller is
 	COMPONENT flag_register is
     Port ( clk : in  STD_LOGIC;
            set : in  STD_LOGIC;
+			  resume : in STD_LOGIC;
            flag_number : in  integer;
            value : in  STD_LOGIC;
            carry : in  STD_LOGIC;
@@ -226,6 +228,7 @@ begin
 	flags: flag_register PORT MAP (
 		clk => clk,
       set => set_flag,
+		resume => resume,
       flag_number => flag_number,
       value => flag_value,
       carry => carry,

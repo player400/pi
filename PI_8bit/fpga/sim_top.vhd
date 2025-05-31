@@ -2,15 +2,15 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   12:17:45 05/18/2025
+-- Create Date:   14:14:11 05/31/2025
 -- Design Name:   
--- Module Name:   C:/Users/player401/Desktop/notatki/zak/pi/PI_8bit/fpga/sim_microcontroler.vhd
+-- Module Name:   C:/Users/player401/Desktop/notatki/zak/pi/PI_8bit/fpga/sim_top.vhd
 -- Project Name:  pi
 -- Target Device:  
 -- Tool versions:  
 -- Description:   
 -- 
--- VHDL Test Bench Created by ISE for module: microcontroller
+-- VHDL Test Bench Created by ISE for module: top
 -- 
 -- Dependencies:
 -- 
@@ -32,54 +32,63 @@ USE ieee.std_logic_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
  
-ENTITY sim_microcontroler IS
-END sim_microcontroler;
+ENTITY sim_top IS
+END sim_top;
  
-ARCHITECTURE behavior OF sim_microcontroler IS 
+ARCHITECTURE behavior OF sim_top IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
  
-    COMPONENT microcontroller
+    COMPONENT top
     PORT(
-         input : IN  std_logic_vector(7 downto 0);
-         output : OUT  std_logic_vector(7 downto 0);
-         input_confirm : IN  std_logic;
-         clk : IN  std_logic;
-         address : IN  integer
+         sw_i : IN  std_logic_vector(7 downto 0);
+         led_o : OUT  std_logic_vector(7 downto 0);
+         clk_i : IN  std_logic;
+         btnl_i : IN  std_logic;
+         btnu_i : IN  std_logic;
+         btnr_i : IN  std_logic;
+         btnd_i : IN  std_logic;
+         btnc_i : IN  std_logic
         );
     END COMPONENT;
     
 
    --Inputs
-   signal input : std_logic_vector(7 downto 0) := (others => '0');
-   signal input_confirm : std_logic := '0';
-   signal clk : std_logic := '0';
-   signal address : integer := 0;
+   signal sw_i : std_logic_vector(7 downto 0) := (others => '0');
+   signal clk_i : std_logic := '0';
+   signal btnl_i : std_logic := '0';
+   signal btnu_i : std_logic := '0';
+   signal btnr_i : std_logic := '0';
+   signal btnd_i : std_logic := '0';
+   signal btnc_i : std_logic := '0';
 
  	--Outputs
-   signal output : std_logic_vector(7 downto 0);
+   signal led_o : std_logic_vector(7 downto 0);
 
    -- Clock period definitions
-   constant clk_period : time := 10 ns;
+   constant clk_i_period : time := 10 ns;
  
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: microcontroller PORT MAP (
-          input => input,
-          output => output,
-          input_confirm => input_confirm,
-          clk => clk,
-          address => address
+   uut: top PORT MAP (
+          sw_i => sw_i,
+          led_o => led_o,
+          clk_i => clk_i,
+          btnl_i => btnl_i,
+          btnu_i => btnu_i,
+          btnr_i => btnr_i,
+          btnd_i => btnd_i,
+          btnc_i => btnc_i
         );
 
    -- Clock process definitions
-   clk_process :process
+   clk_i_process :process
    begin
-		clk <= '0';
-		wait for clk_period/2;
-		clk <= '1';
-		wait for clk_period/2;
+		clk_i <= '0';
+		wait for clk_i_period/2;
+		clk_i <= '1';
+		wait for clk_i_period/2;
    end process;
  
 
@@ -87,9 +96,14 @@ BEGIN
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
-      wait for 100 ns;	
 
 		
+
+      wait for clk_i_period*50;
+		btnr_i <= '1';
+		wait for clk_i_period*5;
+		btnr_i <= '0';
+
       -- insert stimulus here 
 
       wait;
