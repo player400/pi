@@ -33,14 +33,17 @@ entity registry_acc is
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
 			  carry: out STD_LOGIC;
            set : in  STD_LOGIC;
+			  set_this_cycle: in STD_LOGIC;
            input_alu : in  STD_LOGIC_VECTOR (8 downto 0);
            set_alu : in  STD_LOGIC;
+			  input_async: in STD_LOGIC_VECTOR (7 downto 0);
+			  set_async: in STD_LOGIC;
            output : out  STD_LOGIC_VECTOR (7 downto 0);
            clk : in  STD_LOGIC);
 end registry_acc;
 
 architecture Behavioral of registry_acc is
-	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= X"1E";
+	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= X"00";
 	SIGNAL staging: STD_LOGIC_VECTOR(7 downto 0);
 	SIGNAL carry_state: STD_LOGIC := '0';
 begin
@@ -59,11 +62,15 @@ begin
 				state <= input_alu(7 downto 0);
 				carry_state <= input_alu(8);
 			else
-				if set = '1' then
+				if set_this_cycle = '1' then
 					state <= staging;
 				end if;
 			end if;
+			if set_async = '1' then
+				state <= input_async;
+			end if;
 		end if;
+
 	end process setter;
 	
 	output <= state;

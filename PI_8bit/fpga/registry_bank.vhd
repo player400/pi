@@ -33,11 +33,14 @@ entity registry_bank is
     Port ( clk : in  STD_LOGIC;
 			  iterate: in STD_LOGIC;
            set : in  STD_LOGIC;
+			  acc_set_this_cycle: in STD_LOGIC;
            input : in  STD_LOGIC_VECTOR (7 downto 0);
            input_address : in  integer;
            ir_output : out  STD_LOGIC_VECTOR (15 downto 0);
 			  output: out STD_LOGIC_VECTOR (7 downto 0);
            output_address : in  integer;
+			  acc_input_async : in STD_LOGIC_VECTOR (7 downto 0);
+			  acc_set_async: in STD_LOGIC;
            acc : out  STD_LOGIC_VECTOR (7 downto 0);
            pc : out  STD_LOGIC_VECTOR (7 downto 0);
            alpha : out  STD_LOGIC_VECTOR (7 downto 0);
@@ -81,8 +84,11 @@ COMPONENT registry_acc is
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
 			  carry: out STD_LOGIC;
            set : in  STD_LOGIC;
+			  set_this_cycle: in STD_LOGIC;
            input_alu : in  STD_LOGIC_VECTOR (8 downto 0);
            set_alu : in  STD_LOGIC;
+			  input_async: in STD_LOGIC_VECTOR (7 downto 0);
+			  set_async: in STD_LOGIC;
            output : out  STD_LOGIC_VECTOR (7 downto 0);
            clk : in  STD_LOGIC);
 END COMPONENT registry_acc;
@@ -131,7 +137,7 @@ begin
 	
 	aplha_reg: registry_ab 
 	GENERIC MAP (
-		initial => X"1E"
+		initial => X"00"
 	)
 	PORT MAP(
 		input => input,
@@ -157,8 +163,11 @@ begin
 		input => input,
 		output => acc_out,
 		set => acc_set,
+		set_this_cycle => acc_set_this_cycle,
 		set_alu => alu_set,
 		input_alu => alu_input,
+		input_async => acc_input_async,
+		set_async => acc_set_async,
 		carry => carry,
 		clk =>clk
 	);

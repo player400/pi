@@ -98,12 +98,12 @@ BEGIN
       -- hold reset state for 100 ns.
 
 		
-
-      wait for clk_i_period*50;
-		btnr_i <= '1';
-		wait for clk_i_period*5;
-		btnr_i <= '0';
-
+		while 1 = 1 loop
+			wait for clk_i_period*500;
+			btnr_i <= '1';
+			wait for clk_i_period*5;
+			btnr_i <= '0';
+		end loop;
       -- insert stimulus here 
 
       wait;

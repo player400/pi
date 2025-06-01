@@ -1,7 +1,26 @@
+filename = input()
+
+extension = filename.split('.')[-1]
+
+
+
+
+def getSize(fileobject):
+    fileobject.seek(0,2)
+    size = fileobject.tell()
+    return size
+
 hex_list = []
-with open('hello_world.hex', 'r') as fp:
-    for line in fp:
-        hex_list.extend(line.split())
+
+if extension == 'hex':
+    with open(filename, 'r') as fp:
+        for line in fp:
+            hex_list.extend(line.split())
+if extension == 'bin':
+    with open(filename,"rb") as f:
+        block = f.read()
+        hex_string = block.hex()
+        hex_list = [hex_string[i:i + 2] for i in range(0, len(hex_string), 2)]
     
 pc = hex_list[1]
 alpha = hex_list[2]

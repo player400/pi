@@ -46,6 +46,7 @@ architecture Behavioral of microcontroller is
 				  clk : in  STD_LOGIC;
 				  iterate: in STD_LOGIC;
 				  set : in  STD_LOGIC;
+				  acc_set_this_cycle: in STD_LOGIC;
 				  input : in  STD_LOGIC_VECTOR (7 downto 0);
 				  input_address : in  integer;
 				  output: out STD_LOGIC_VECTOR (7 downto 0);
@@ -54,6 +55,8 @@ architecture Behavioral of microcontroller is
 				  alu_set: in STD_LOGIC;
 				  carry : out STD_LOGIC;
 				  alu_input: in STD_LOGIC_VECTOR (8 downto 0);
+				  acc_input_async: in STD_LOGIC_VECTOR (7 downto 0);
+				  acc_set_async: in STD_LOGIC;
 				  acc : out  STD_LOGIC_VECTOR (7 downto 0);
 				  pc : out  STD_LOGIC_VECTOR (7 downto 0);
 				  alpha : out  STD_LOGIC_VECTOR (7 downto 0);
@@ -135,6 +138,7 @@ architecture Behavioral of microcontroller is
 	SIGNAL flag_operation: STD_LOGIC;
 	SIGNAL carry: STD_LOGIC;
 
+	
 	SIGNAL alu_set: STD_LOGIC;
 	SIGNAL alu_bus: STD_LOGIC_VECTOR(8 downto 0);
 	SIGNAL alpha: STD_LOGIC_VECTOR (7 downto 0);
@@ -172,6 +176,7 @@ architecture Behavioral of microcontroller is
 	SIGNAL pc: integer;
 	SIGNAL acc: STD_LOGIC_VECTOR(7 downto 0);
 	
+	SIGNAL acc_set_this_cycle: STD_LOGIC := '0';
 	
 begin
 
@@ -194,6 +199,7 @@ begin
 		clk => clk,
 		iterate => iterate,
 		set => set_register,
+		acc_set_this_cycle => acc_set_this_cycle,
 		input => general_bus,
 		input_address => registry_input_address,
 		output => register_output,
@@ -204,6 +210,8 @@ begin
 		alu_input => alu_bus,
 		alpha => alpha,
 		beta => beta,
+		acc_input_async => input,
+		acc_set_async => input_confirm,
 		acc => acc,
 		pc => pc_vector
 	);
@@ -247,7 +255,8 @@ begin
 	set_memory <= execute and iterate and rq_set_memory;
 	set_flag <= (iterate and rq_set_flag) when flag_number = 1 else (iterate and execute and rq_set_flag);
 	
-	alu_set <= '1' when (set_register = '1' and (registry_input_address = 1 or registry_input_address = 2)) else '0';
+	alu_set <= '1' when (opcode = '0' and (( mov_reverse = '0' and (mov_registry_number = 1 or mov_registry_number = 2)) or ( mov_reverse = '1' and (ir_address = 1 or ir_address = 2) ))) else '0';
+	acc_set_this_cycle <= '1' when (opcode = '0' and ((mov_reverse = '0' and mov_registry_number = 3) or (mov_reverse = '1' and ir_address = 3))) else '0';
 	
 	rq_set_memory <= '1' when (opcode = '0' and (mov_reverse='1' and ir_address>15)) else '0';
 	rq_set_register <= '0' when (opcode = '1' or (mov_reverse='1' and ir_address>15)) else '1';
