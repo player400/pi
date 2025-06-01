@@ -31,17 +31,23 @@ use IEEE.NUMERIC_STD.ALL;
 --use UNISIM.VComponents.all;
 
 entity microcontroller is
+	 Generic (
+			  program: STD_LOGIC_VECTOR(2047 downto 0)
+	 );
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
            output : out  STD_LOGIC_VECTOR (7 downto 0);
 			  input_confirm : in STD_LOGIC;
 			  resume : in STD_LOGIC;
-           clk : in  STD_LOGIC;
-           address : in  integer);
+           clk : in  STD_LOGIC
+	 );
 end microcontroller;
 
 architecture Behavioral of microcontroller is
 
 	COMPONENT registry_bank is
+		 Generic (
+			     initial: STD_LOGIC_VECTOR(127 downto 0)
+		 );
 		 Port ( 
 				  clk : in  STD_LOGIC;
 				  iterate: in STD_LOGIC;
@@ -73,6 +79,9 @@ architecture Behavioral of microcontroller is
 	END COMPONENT alu;
 	
 	COMPONENT memory is
+	 Generic (
+			  initial: STD_LOGIC_VECTOR(1919 downto 0)
+	 );
     Port ( address : in  integer;
            input : in  STD_LOGIC_VECTOR (7 downto 0);
            set : in  STD_LOGIC;
@@ -195,7 +204,11 @@ begin
       clk => clk
 	);
 
-	registers: registry_bank PORT MAP (
+	registers: registry_bank 
+	GENERIC MAP (
+		initial => program(127 downto 0)
+	)
+	PORT MAP (
 		clk => clk,
 		iterate => iterate,
 		set => set_register,
@@ -224,7 +237,11 @@ begin
 		flag_2 => af2
 	);
 	
-	ram: memory PORT MAP (
+	ram: memory
+	GENERIC MAP (
+		initial => program(2047 downto 128)
+	)
+	PORT MAP (
 		address => memory_address,
 		input => general_bus,
 		set => set_memory,
@@ -255,8 +272,8 @@ begin
 	set_memory <= execute and iterate and rq_set_memory;
 	set_flag <= (iterate and rq_set_flag) when flag_number = 1 else (iterate and execute and rq_set_flag);
 	
-	alu_set <= '1' when (opcode = '0' and (( mov_reverse = '0' and (mov_registry_number = 1 or mov_registry_number = 2)) or ( mov_reverse = '1' and (ir_address = 1 or ir_address = 2) ))) else '0';
-	acc_set_this_cycle <= '1' when (opcode = '0' and ((mov_reverse = '0' and mov_registry_number = 3) or (mov_reverse = '1' and ir_address = 3))) else '0';
+	alu_set <= '1' when ((execute = '1' and iterate = '1') and (opcode = '0' and (( mov_reverse = '0' and (mov_registry_number = 1 or mov_registry_number = 2)) or ( mov_reverse = '1' and (ir_address = 1 or ir_address = 2) )))) else '0';
+	acc_set_this_cycle <= '1' when ((execute = '1' and iterate = '1') and (opcode = '0' and ((mov_reverse = '0' and mov_registry_number = 3) or (mov_reverse = '1' and ir_address = 3)))) else '0';
 	
 	rq_set_memory <= '1' when (opcode = '0' and (mov_reverse='1' and ir_address>15)) else '0';
 	rq_set_register <= '0' when (opcode = '1' or (mov_reverse='1' and ir_address>15)) else '1';

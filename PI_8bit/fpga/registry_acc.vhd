@@ -30,6 +30,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity registry_acc is
+	 Generic (
+			  initial: STD_LOGIC_VECTOR(7 downto 0)
+	 );
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
 			  carry: out STD_LOGIC;
            set : in  STD_LOGIC;
@@ -43,8 +46,8 @@ entity registry_acc is
 end registry_acc;
 
 architecture Behavioral of registry_acc is
-	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= X"00";
-	SIGNAL staging: STD_LOGIC_VECTOR(7 downto 0);
+	SIGNAL state: STD_LOGIC_VECTOR(7 downto 0):= initial;
+	SIGNAL staging: STD_LOGIC_VECTOR(7 downto 0) := initial;
 	SIGNAL carry_state: STD_LOGIC := '0';
 begin
 

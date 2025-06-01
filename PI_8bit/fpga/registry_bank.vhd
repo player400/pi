@@ -30,6 +30,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity registry_bank is
+	 Generic (
+			  initial: STD_LOGIC_VECTOR(127 downto 0)
+	 );
     Port ( clk : in  STD_LOGIC;
 			  iterate: in STD_LOGIC;
            set : in  STD_LOGIC;
@@ -54,6 +57,9 @@ end registry_bank;
 architecture Behavioral of registry_bank is
 
 COMPONENT general_purpose_register_block is
+	 Generic (
+			  initial: STD_LOGIC_VECTOR(95 downto 0)
+	 );
     Port ( input_address : in  integer;
 			  output_address: in integer;
            input : in  STD_LOGIC_VECTOR (7 downto 0);
@@ -63,6 +69,9 @@ COMPONENT general_purpose_register_block is
 END COMPONENT general_purpose_register_block;
 
 COMPONENT registry_pc is
+	 Generic (
+			  initial: STD_LOGIC_VECTOR(7 downto 0)
+	 );
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
            set : in  STD_LOGIC;
            output : out  STD_LOGIC_VECTOR (7 downto 0);
@@ -81,6 +90,9 @@ COMPONENT registry_ab is
 END COMPONENT registry_ab;
 
 COMPONENT registry_acc is
+	 Generic (
+			  initial: STD_LOGIC_VECTOR(7 downto 0)
+	 );
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
 			  carry: out STD_LOGIC;
            set : in  STD_LOGIC;
@@ -117,7 +129,11 @@ SIGNAL gpr_out_adr: integer;
 
 begin
 
-	gpr_bank: general_purpose_register_block PORT MAP(
+	gpr_bank: general_purpose_register_block
+	GENERIC MAP (
+		initial => initial(127 downto 32)
+	)	
+	PORT MAP(
 		input_address => gpr_in_adr,
 		output_address => gpr_out_adr,
 		input => input,
@@ -127,6 +143,9 @@ begin
 	);
 	
 	pc_reg: registry_pc 
+		GENERIC MAP (
+		initial => initial(7 downto 0)
+	)
 	PORT MAP(
 		input => input,
 		output => pc_out,
@@ -137,7 +156,7 @@ begin
 	
 	aplha_reg: registry_ab 
 	GENERIC MAP (
-		initial => X"00"
+		initial => initial(15 downto 8)
 	)
 	PORT MAP(
 		input => input,
@@ -149,7 +168,7 @@ begin
 	
 	beta_reg: registry_ab 
 	GENERIC MAP (
-		initial => X"00"
+		initial => initial(23 downto 16)
 	)
 	PORT MAP(
 		input => input,
@@ -159,7 +178,11 @@ begin
 	
 	);
 	
-	accumulator: registry_acc PORT MAP(
+	accumulator: registry_acc 
+	GENERIC MAP (
+		initial => initial(31 downto 24)
+	)
+	PORT MAP(
 		input => input,
 		output => acc_out,
 		set => acc_set,

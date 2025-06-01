@@ -30,6 +30,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity general_purpose_register_block is
+	 Generic (
+			  initial: STD_LOGIC_VECTOR(95 downto 0)
+	 );
     Port ( input_address : in  integer;
 			  output_address: in integer;
            input : in  STD_LOGIC_VECTOR (7 downto 0);
@@ -39,7 +42,7 @@ entity general_purpose_register_block is
 end general_purpose_register_block;
 
 architecture Behavioral of general_purpose_register_block is
-	SIGNAL state: STD_LOGIC_VECTOR(95 downto 0) := X"0000000010f0005e00000000";
+	SIGNAL state: STD_LOGIC_VECTOR(95 downto 0) := initial;
 begin
 	
 	setter: process(clk) begin

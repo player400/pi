@@ -41,13 +41,11 @@ entity ir is
            flag_operation : out  STD_LOGIC;
            flag_value : out  STD_LOGIC;
            address : out  STD_LOGIC_VECTOR (7 downto 0);
-			  instruction_loaded: out STD_LOGIC;
            clk : in  STD_LOGIC);
 end ir;
 
 architecture Behavioral of ir is
 	SIGNAL state: STD_LOGIC_VECTOR(15 downto 0) := "0000000000000000";
-	SIGNAL state_ir: STD_LOGIC := '0';
 begin
 
 	setter: process(clk) begin
@@ -67,7 +65,6 @@ begin
 	flag_negate <= state(8);
 	address <= state(7 downto 0);
 	
-	instruction_loaded <= state_ir;
 	
 end Behavioral;
 

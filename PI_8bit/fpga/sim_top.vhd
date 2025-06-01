@@ -27,6 +27,7 @@
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
  
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -44,10 +45,7 @@ ARCHITECTURE behavior OF sim_top IS
          sw_i : IN  std_logic_vector(7 downto 0);
          led_o : OUT  std_logic_vector(7 downto 0);
          clk_i : IN  std_logic;
-         btnl_i : IN  std_logic;
-         btnu_i : IN  std_logic;
          btnr_i : IN  std_logic;
-         btnd_i : IN  std_logic;
          btnc_i : IN  std_logic
         );
     END COMPONENT;
@@ -56,10 +54,8 @@ ARCHITECTURE behavior OF sim_top IS
    --Inputs
    signal sw_i : std_logic_vector(7 downto 0) := (others => '0');
    signal clk_i : std_logic := '0';
-   signal btnl_i : std_logic := '0';
-   signal btnu_i : std_logic := '0';
    signal btnr_i : std_logic := '0';
-   signal btnd_i : std_logic := '0';
+
    signal btnc_i : std_logic := '0';
 
  	--Outputs
@@ -75,10 +71,8 @@ BEGIN
           sw_i => sw_i,
           led_o => led_o,
           clk_i => clk_i,
-          btnl_i => btnl_i,
-          btnu_i => btnu_i,
           btnr_i => btnr_i,
-          btnd_i => btnd_i,
+
           btnc_i => btnc_i
         );
 
@@ -94,15 +88,23 @@ BEGIN
 
    -- Stimulus process
    stim_proc: process
+	variable x : integer := 1;
    begin		
       -- hold reset state for 100 ns.
 
 		
 		while 1 = 1 loop
-			wait for clk_i_period*500;
+			wait for clk_i_period*50000;
+
+			sw_i <= std_logic_vector(to_unsigned(x, sw_i'length));
+			btnc_i <= '1';
+			wait for clk_i_period*50;
+			btnc_i <= '0';
+			wait for clk_i_period*50;
 			btnr_i <= '1';
-			wait for clk_i_period*5;
+			wait for clk_i_period*50;
 			btnr_i <= '0';
+			x := x +1;
 		end loop;
       -- insert stimulus here 
 

@@ -35,10 +35,7 @@ entity top is
 		sw_i: in STD_LOGIC_VECTOR(7 downto 0);
 		led_o: out STD_LOGIC_VECTOR(7 downto 0);
 		clk_i: in STD_LOGIC;
-		btnl_i: in STD_LOGIC;
-		btnu_i: in STD_LOGIC;
 		btnr_i: in STD_LOGIC;
-		btnd_i: in STD_LOGIC;
 		btnc_i: in STD_LOGIC
 	);
 end top;
@@ -47,17 +44,17 @@ end top;
 architecture Behavioral of top is
 
 COMPONENT microcontroller is
+	 Generic (
+			  program: STD_LOGIC_VECTOR(2047 downto 0)
+	 );
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
            output : out  STD_LOGIC_VECTOR (7 downto 0);
 			  input_confirm : in STD_LOGIC;
 			  resume : in STD_LOGIC;
-           clk : in  STD_LOGIC;
-           address : in  integer);
+           clk : in  STD_LOGIC
+    );
 END COMPONENT microcontroller;
 
-
-SIGNAL temp: STD_LOGIC_VECTOR(7 downto 0);
-SIGNAL adr: integer;
 
 SIGNAL slow_clk: STD_LOGIC := '1';
 SIGNAL counter: integer := 0;
@@ -69,25 +66,27 @@ SIGNAL resume_edge: STD_LOGIC;
 
 begin
 	
-	pi: microcontroller PORT MAP(
+	pi: microcontroller 
+	GENERIC MAP(
+		program => x"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000F00040802040310009010000000000000000000000001000010"
+	)
+	PORT MAP(
 		input => sw_i,
 		output => led_o,
 		input_confirm => btnc_i,
 		resume => resume_edge,
-		clk => slow_clk,
-		address => adr
-	
+		clk => slow_clk
 	);
 	
 	count: process(clk_i) begin
 		if rising_edge(clk_i) then
-			if counter < 19 then
+			if counter < 49 then
 				counter <= counter+1;
 			else
 				counter <= 0;
 			end if;
 			
-			if counter > 9 then 
+			if counter > 24 then 
 				slow_clk <= '0';
 			else
 				slow_clk <= '1';
@@ -110,8 +109,5 @@ begin
 
 	resume_edge <= '1' when (resume_rising_edge_detector = 0 and resume = '1') else '0';
 
-	temp(7 downto 0) <= "00000000";
-
-	adr <= to_integer(unsigned(temp));
 end Behavioral;
 

@@ -30,6 +30,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity memory is
+	 Generic (
+			  initial: STD_LOGIC_VECTOR(1919 downto 0)
+	 );
     Port ( address : in  integer;
            input : in  STD_LOGIC_VECTOR (7 downto 0);
            set : in  STD_LOGIC;
@@ -40,7 +43,7 @@ end memory;
 
 architecture mem of memory is
 
-	SIGNAL state: STD_LOGIC_VECTOR(1919 downto 0) := X"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005e00000000000000000000000000000000ff01f1002c1658000e4c02785d0400a00e6c0ea459000ca50f680fa40c4c02700f4c027c5c040d4c0274ff04334c0260017cff502b4c6e080f4c026801780c685a34044c00900374084c0260016c";
+	SIGNAL state: STD_LOGIC_VECTOR(1919 downto 0) := initial;
 	SIGNAL address_trimmed: integer;
 
 begin
@@ -49,22 +52,6 @@ begin
 			if set = '1' then
 				state(address*8 + 7 downto address*8) <= input;
 			end if;
---			state(7 downto 0) <= "01010000";
---			state(15 downto 8) <= "10000000";
---			state(23 downto 16) <= "00001000";
---			state(31 downto 24) <= "10000000";
---			state(39 downto 32) <= "10010000";
---			state(47 downto 40) <= "00000000";
---			state(55 downto 48) <= "00001100";
---			state(63 downto 56) <= "00000001";
---			state(71 downto 64) <= "10010000";
---			state(79 downto 72) <= "00000000";
---			state(87 downto 80) <= "00000000";
---			state(95 downto 88) <= "00011100";
---			state(103 downto 96) <= "00010010";
-
-
-
 		end if;
 	end process setter;
 	

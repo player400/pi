@@ -31,7 +31,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity registry_ab is
 	 Generic (
-		initial : STD_LOGIC_VECTOR(7 downto 0)
+			  initial : STD_LOGIC_VECTOR(7 downto 0)
 	 );
     Port ( input : in  STD_LOGIC_VECTOR (7 downto 0);
            set : in  STD_LOGIC;

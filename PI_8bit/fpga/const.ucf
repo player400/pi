@@ -14,13 +14,8 @@ NET "led_o[4]" LOC = "M13";
 NET "led_o[5]" LOC = "D4";
 NET "led_o[6]" LOC = "P16";
 NET "led_o[7]" LOC = "N12";
-NET "btnl_i" LOC = "P4";
-NET "btnu_i" LOC = "N4";
 NET "btnc_i" LOC = "F5";
 NET "btnr_i" LOC = "F6";
-NET "btnd_i" LOC = "P3";
 
 NET "clk_i" LOC = "L15";
-NET "slow_clk" PERIOD = 200ns;
-
-NET "btnd_i" CLOCK_DEDICATED_ROUTE = FALSE;
+NET "slow_clk" PERIOD = 250ns;
