@@ -28,7 +28,16 @@ Availible for:\
 <br/>
 
 
-Schematic
+RTL Digital Design
+_______________________________________________________________________
+VHDL design of a PI microcontroller for the Digilent Atlys board with Spartan 6.\
+Supporting:\
+    -8 bit version\
+<br/>
+<br/>
+    
+
+DTL Schematics
 _______________________________________________________________________
 Logical design/simulation (on the logic gate level) of a PI computer made with the Circuit Verse software.\ 
 Availible for:\
@@ -56,17 +65,9 @@ Supporting:\
     -8 bit version\
 <br/>
 <br/>
-    
 
 ## Further plans
 
-Short term<br/>
-_______________________________________________________________________<br/>
-    -developing an 8-bit PI computer on an FPGA (IN PROGRESS)<br/>
-
-
-<br/>
-<br/>
 Long term<br/>
 _______________________________________________________________________<br/>
     -actually building a computer with logic gates<br/>
@@ -75,7 +76,7 @@ _______________________________________________________________________<br/>
     
 ## Navigation
 
-PI_4bit folder contains everything pertaining to the 4-bit PI, PI_8bit folder contains everything pertaining to the 8-bit PI, pi_vm folder contains the emulator, pi_asm folder contains the assembler.
+PI_4bit folder contains everything pertaining to the 4-bit PI, PI_8bit folder contains everything pertaining to the 8-bit PI (including the VHDL design files), pi_vm folder contains the emulator, pi_asm folder contains the assembler.
 
 
 

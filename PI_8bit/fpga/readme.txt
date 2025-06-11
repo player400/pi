@@ -19,3 +19,18 @@ Building and running:
 	6. In the dropdown list select xc6slx45-3csg324 > top.vhdl
 	7. Click on the Generate Programming File option in the small window below, wait for the build to finish
 	8. On Windows: left click on the run.bat file and press Enter. On Linux: run command "djtgcfg prog -d Atlys -i 0 -f top.bit" in this folder. 
+	
+Programming the microcontroller:
+	1. Go to ../fpga_programming_converter
+	2. Execute python script convert.py
+	3. Type in the name of the .bin or .hex file (program binary). Press enter.
+	4. A HEX string (memory image) will be printed.
+	5. Open the top.vhdl file.
+	6. Paste the image into the "program" generic in the generic map for the "pi" component.
+	7. Now synthesize the design and program your board.
+	
+IO Interface of the microntroller:
+	The microcontroller has 8-bit input and 8-bit output (LEDs and switches on the board)
+	Output is always set to the contents of registry 3.
+	Input is saved in registry 3 then "input_confirm" is activate (BTNC button on the board).
+	When the program is halted (Halt Flag set to 1), it can be resumed by sending a signal on the resume pin (BTNR button on the board)
